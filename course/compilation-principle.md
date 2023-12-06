@@ -1,3 +1,13 @@
+---
+title: 编译原理课程笔记
+description: 
+published: true
+date: 2023-09-14T08:33:16.102Z
+tags: 
+editor: markdown
+dateCreated: 2023-09-13T06:20:57.474Z
+---
+
 # 编译原理
 
 ## 大纲
