@@ -2,10 +2,10 @@
 title: 编译原理课程笔记
 description: 
 published: true
-date: 2023-09-14T08:33:16.102Z
+date: 2023-12-07T08:54:00.882Z
 tags: 
 editor: markdown
-dateCreated: 2023-09-13T06:20:57.474Z
+dateCreated: 2023-12-04T06:10:03.782Z
 ---
 
 # 编译原理
@@ -328,7 +328,153 @@ Hopcroft算法的基本思想，要理解需要对抽象代数略作回忆：
 
 ### 自顶向下的语法分析技术
 
+#### 求first(x)
+
+- 如果X是一个终结符，那么$FIRST(X) = {X}$
+- 如果X是一个非终结符，且$X\rightarrow Y_1Y_2...Y_k \in P(k\ge 1)$，那么如果对于某个$i$,$a$在$FIRST(Y_i)$中且$\varepsilon$在所有的$FIRST(Y_1),FIRST(Y_2)...FIRST(Y_{i-1})$中，那么把$a$加入$FIRST(X)$中
+- 如果$X\rightarrow \varepsilon $，那么把$\varepsilon$放入$FIRST(X)$中
+
+#### 求串的first
+
+对于串$X_1X_2...X_n$
+
+- 向$FIRST(X_1X_2...X_n)$中加入$FIRST(X_1)$中的所有非$\varepsilon$符号
+
+- 如果$\varepsilon$在$FIRST(X_1)$中，那么把$FIRST(X_2)$加入$FIRST(X_1X_2...X_n)$中所有非$\varepsilon$符号加入......以此类推
+- 最后，如果对于所有的$i$，$\varepsilon$在$FIRST(X_i)$中，那么把$\varepsilon$加入$FIRST(X_1X_2...X_n)$
+
+#### 求FELLOW集
+
+不断应用以下规则，知道没有新的终结符可以加到任何FELLOW集合。
+
+- 将$\$$放入$FELLOW(S)$中，其中S是开始符号，$\$$是输入右端的结束标记
+- 如何存在一个产生式$A\rightarrow \alpha B \beta$，那么$FIRST(\beta)$中所有非$\varepsilon$符号都在$FELLOW(B)$中
+- 如果存在一个产生式$A\rightarrow \alpha B$，或存在$A\rightarrow \alpha B\beta$且$FIRST(\beta)$包含$\varepsilon$，那么$FELLOW(A)$中的所有元素都在$FELLOW(B)$中**这里说明了一种FELLOW(B)对于FELLOW(A)的依赖关系**
+
+求FELLOW的过程是不断更新的过程，FELLOW集直接有依赖关系，如果后面一个FELLOW集更新了，那么所有依赖他的FELLOW集都需要更新。可以在他们之间建一条边，说明这种依赖关系。
+
+#### 求SELECT集
+
+对于一个产生式$A\rightarrow \alpha$，求$SELECT(A\rightarrow \alpha)$
+
+- 若$\varepsilon \notin FIRST(\alpha)$，那么$SELECT(A\rightarrow \alpha)=FIRST(\alpha)$
+- 若$\varepsilon \in FIRST(\alpha)$，那么$SELECT(A\rightarrow \alpha) = FIRST(\alpha)\cup FELLOW(A)$
+
+#### LL(1)文法
+
+一个文法是LL(1)文法的充要条件是每个非终结符A的两个不同产生式$A \rightarrow \alpha ,A \rightarrow \beta$满足$SELECT(A\rightarrow \alpha)\cap SELECT(A\rightarrow \beta) = \emptyset$
+
+#### 文法的等价变换
+
+确定的自顶向下分析要求给定语言的文法必须是 LL(1)的形式，所以如果一个文法不是LL(1)文法，需要先进行转换。
+
+1. 提取左公因子
+
+   当一个文法中含有产生式$A\rightarrow \alpha \beta | \alpha \gamma$时，$SELECT(A\rightarrow \alpha \beta ) \cap SELECT(A\rightarrow  \alpha \gamma) \neq \emptyset$，就不符合LL(1)文法的条件
+
+   所以需要提取公因式。
+
+   对$A\rightarrow \alpha \beta_1 |\alpha \beta_2|...|\alpha \beta_n$提取公因式
+
+   $A\rightarrow A'$
+
+   $A'\rightarrow \beta_1|\beta_2|...|\beta_n$
+
+   如果还有公因式，就继续提取。
+
+2. 消除左递归
+
+   a) 将间接左递归转为直接左递归
+
+   ​	例如，若有$A_i\rightarrow A_j\alpha$，$A_j\rightarrow A_i\beta$，说明存在间接左递归。
+
+   将$A_j$的产生式带入$A_i$转化为直接左递归$A_i\rightarrow A_i\beta\alpha$
+
+   **b) 消除直接左递归(将左递归改写成右递归)**
+
+   ​	若有产生式$A\rightarrow A\beta |\gamma$，那么转化成$A\rightarrow \gamma A'$，$A'\rightarrow \beta A'|\varepsilon$
+
+   ​	更一般的情况$A\rightarrow A\alpha_1 | A\alpha_2|...|A\alpha_3$
+   
 ### 自底向上的语法分析技术
+
+
+#### LR文法概述
+
+<img src="https://s2.loli.net/2023/12/07/yjfHD4RrYTtupW2.png" alt="image-20231110162406043" style="zoom:50%;" />
+
+LR文法分析的过程要一句LR分析表进行。还需要维护一个状态栈和符号栈。
+
+- 对于action表中的某一列a的sn，表示将符号a、状态n入栈
+- 对于action表中的rn表示使用第n个产生式进行规约。
+
+分析过程（可能比较抽象，但是思路不难）
+
+注意，每次都是用状态栈的栈顶状态与剩余输入的第一个在action表中进行转移。
+
+- 情况一，如果action表中给出了sx的答案，表示不需要规约，那么只要将新状态x入栈，将字符a入栈即可。![](https://s2.loli.net/2023/12/07/fmVv1zOx8qiwgtn.png)
+
+- 情况二，如果action给出了rx的答案， 说明需要规约，那么就按照产生式进行规约，规约之后状态栈会比符号栈少一个字符，然后再GOTO表中按照状态栈顶和符号栈顶求出一个状态，压入状态栈顶中。
+
+  ![](https://s2.loli.net/2023/12/07/kBPdyqe8YpJTGwF.png)
+
+- 情况三四，如果转移到了acc，说明完成了，如果转移到了err说明错误了。
+
+  ![image-20231110163334427](https://s2.loli.net/2023/12/07/F9LQd8qKpelm6GU.png)
+
+  
+
+#### LR(0)分析法
+
+LR(0)提供了一种构造分析表的方法。
+
+##### LR(0)项目
+
+右部某位置标有圆点的产生式称为相应文法的一个LR(0)项目。例如
+
+ <img src="https://s2.loli.net/2023/12/07/NcruijkeCSY9xpg.png" alt="image-20231110164457953" style="zoom:50%;" />
+
+同属于一个产生式的项目，如果圆点的位置只相差1，那么后者是前者的后继项目。例如$A\rightarrow a \cdot X \beta$的后继项目是$A\rightarrow aX\cdot \beta$。
+
+##### 等价项目
+
+当一个项目的圆点后面是非终结符的时候，那么他就存在等价项目，例如$S\rightarrow v\cdot I:T$与$I\rightarrow \cdot I,i$就是一个等价项目。因为第一个项目的圆点后面是$I$，所以$I$作为左部的产生式中，所有以圆点开头的都是他的等价项目。所有等价项目构成一个**等价闭包**
+
+##### 构造LR(0)自动机
+
+![image-20231110165037638](https://s2.loli.net/2023/12/07/UtqgpA1hzNQwMem.png)
+
+如图所示，从初始状态开始，对于每个项目，都求一下后继项目，然后连一条边到那个项目的等价闭包。最后可以构建出如上图的自动机。
+
+##### 构建分析表
+
+由上面的自动机可以构建出分析表。方法就是行上列出所有状态号，列上，终结符放入action中，非终结符放入GOTO中。可以构建出如下的分析表
+
+![image-20231110165310673](https://s2.loli.net/2023/12/07/8LuSDt6AMzcGnml.png)
+
+##### 冲突
+
+LR(0)文法是存在冲突的
+
+![image-20231110165612682](https://s2.loli.net/2023/12/07/OpyFXqW9f3kI4ah.png)
+
+如图，这个状态，第一个项目认为是一个结束状态，可以规约了，但是第二个状态认为还可以接收*。这样就导致了移入/归约冲突。同样的还存在归约/归约冲突，就是同一个闭包中，两个状态希望规约到不同的非终结符。
+
+
+
+#### SLR文法
+
+ 面对上面LR(0)中的冲突，我们可以进行改进得到SLR文法。方法就是在构建分析表时，根据产生式左部的follow集进行归约。
+
+反省一下之前LR(0)文法时，如果一个状态可以归约了，那么不管他剩余输入的第一个字符是什么，都进行规约。
+
+在SLR文法中，根据剩余输入的第一个，采取不同的规约动作。  
+
+![image-20231110190051502](https://s2.loli.net/2023/12/07/iROoYDUsdIWMFHg.png)
+
+如上图，$I_2$中，存在规约/规约冲突，观察B的follow集，只有d，所以在ACTION中，当待输入符号的第一个是d的时候，用第四个产生式进行归约，同理，当剩余输入的第一个是b和$的时候，采用第二个产生式进行输入。
+
+**限制：要求一个项目闭包中，归约项目的左部的follow集与移进项目的剩余输入的首字符不相同。**
 
 ### 语法分析器生成工具
 
