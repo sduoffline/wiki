@@ -2,7 +2,7 @@
 title: 编译原理课程笔记
 description: 
 published: true
-date: 2023-12-07T08:54:00.882Z
+date: 2023-12-07T08:56:52.454Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-04T06:10:03.782Z
@@ -332,7 +332,7 @@ Hopcroft算法的基本思想，要理解需要对抽象代数略作回忆：
 
 - 如果X是一个终结符，那么$FIRST(X) = {X}$
 - 如果X是一个非终结符，且$X\rightarrow Y_1Y_2...Y_k \in P(k\ge 1)$，那么如果对于某个$i$,$a$在$FIRST(Y_i)$中且$\varepsilon$在所有的$FIRST(Y_1),FIRST(Y_2)...FIRST(Y_{i-1})$中，那么把$a$加入$FIRST(X)$中
-- 如果$X\rightarrow \varepsilon $，那么把$\varepsilon$放入$FIRST(X)$中
+- 如果$X\rightarrow \varepsilon$，那么把$\varepsilon$放入$FIRST(X)$中
 
 #### 求串的first
 
