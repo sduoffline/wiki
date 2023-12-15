@@ -2,7 +2,7 @@
 title: 实时渲染
 description: 很惭愧，就做了一点微小的贡献
 published: true
-date: 2023-12-15T12:53:40.013Z
+date: 2023-12-15T12:55:44.504Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-15T09:04:29.818Z
@@ -1272,7 +1272,7 @@ F_{avg}=\frac
 {\int_{0}^{1}\mu\,\mathrm{d}\mu}\\
 =2\int_{0}^{1}F(\mu)\mu\,\mathrm{d}\mu
 $$
-能被直接看到的部分：$F_{avg}\cdot E_{avg}$
+能被直接看到的部分：$F_{\text{avg}}\cdot E_{\text{avg}}$
 
 而一个bounce后，能看见的就是：$F_{avg}(1-E_{avg})\cdot F_{avg}E_{avg}$
 
