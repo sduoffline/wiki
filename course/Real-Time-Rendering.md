@@ -2,7 +2,7 @@
 title: 实时渲染
 description: 很惭愧，就做了一点微小的贡献
 published: true
-date: 2023-12-15T12:55:44.504Z
+date: 2023-12-15T12:57:25.566Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-15T09:04:29.818Z
@@ -1274,15 +1274,15 @@ F_{avg}=\frac
 $$
 能被直接看到的部分：$F_{\text{avg}}\cdot E_{\text{avg}}$
 
-而一个bounce后，能看见的就是：$F_{avg}(1-E_{avg})\cdot F_{avg}E_{avg}$
+而一个bounce后，能看见的就是：$F_{\text{avg}}(1-E_{\text{avg}})\cdot F_{\text{avg}}E_{\text{avg}}$
 
-很显然，$k$个bounces后，能看见的就是：$F^{k}_{avg}(1-E_{avg})^{k}\cdot F_{avg}E_{avg}$
+很显然，$k$个bounces后，能看见的就是：$F^{k}_{\text{avg}}(1-E_{\text{avg}})^{k}\cdot F_{\text{avg}}E_{\text{avg}}$
 
 把它们加起来，得到Kulla-Conty的颜色项：
 $$
 \frac
-{F_{avg}E_{avg}}
-{1-F_{avg}(1-E_{avg})}
+{F_{\text{avg}}E_{\text{avg}}}
+{1-F_{\text{avg}}(1-E_{\text{avg}})}
 $$
 我们将它直接乘在不带颜色的BRDF项上即可。
 
