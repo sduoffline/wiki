@@ -2,7 +2,7 @@
 title: 编译原理课程笔记
 description: 
 published: true
-date: 2023-12-08T02:45:45.479Z
+date: 2023-12-15T13:35:32.074Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-04T06:10:03.782Z
@@ -510,22 +510,22 @@ Hopcroft算法的基本思想，要理解需要对抽象代数略作回忆：
 - 如果$\varepsilon$在$FIRST(X_1)$中，那么把$FIRST(X_2)$加入$FIRST(X_1X_2...X_n)$中所有非$\varepsilon$符号加入......以此类推
 - 最后，如果对于所有的$i$，$\varepsilon$在$FIRST(X_i)$中，那么把$\varepsilon$加入$FIRST(X_1X_2...X_n)$
 
-#### 求FELLOW集
+#### 求FOLLOW集
 
-不断应用以下规则，知道没有新的终结符可以加到任何FELLOW集合。
+不断应用以下规则，知道没有新的终结符可以加到任何FOLLOW集合。
 
-- 将$\$$放入$FELLOW(S)$中，其中S是开始符号，$\$$是输入右端的结束标记
-- 如何存在一个产生式$A\rightarrow \alpha B \beta$，那么$FIRST(\beta)$中所有非$\varepsilon$符号都在$FELLOW(B)$中
-- 如果存在一个产生式$A\rightarrow \alpha B$，或存在$A\rightarrow \alpha B\beta$且$FIRST(\beta)$包含$\varepsilon$，那么$FELLOW(A)$中的所有元素都在$FELLOW(B)$中**这里说明了一种FELLOW(B)对于FELLOW(A)的依赖关系**
+- 将$\$$放入$FOLLOW(S)$中，其中S是开始符号，$\$$是输入右端的结束标记
+- 如何存在一个产生式$A\rightarrow \alpha B \beta$，那么$FIRST(\beta)$中所有非$\varepsilon$符号都在$FOLLOW(B)$中
+- 如果存在一个产生式$A\rightarrow \alpha B$，或存在$A\rightarrow \alpha B\beta$且$FIRST(\beta)$包含$\varepsilon$，那么$FOLLOW(A)$中的所有元素都在$FOLLOW(B)$中**这里说明了一种FOLLOW(B)对于FOLLOW(A)的依赖关系**
 
-求FELLOW的过程是不断更新的过程，FELLOW集直接有依赖关系，如果后面一个FELLOW集更新了，那么所有依赖他的FELLOW集都需要更新。可以在他们之间建一条边，说明这种依赖关系。
+求FOLLOW的过程是不断更新的过程，FOLLOW集直接有依赖关系，如果后面一个FOLLOW集更新了，那么所有依赖他的FOLLOW集都需要更新。可以在他们之间建一条边，说明这种依赖关系。
 
 #### 求SELECT集
 
 对于一个产生式$A\rightarrow \alpha$，求$SELECT(A\rightarrow \alpha)$
 
 - 若$\varepsilon \notin FIRST(\alpha)$，那么$SELECT(A\rightarrow \alpha)=FIRST(\alpha)$
-- 若$\varepsilon \in FIRST(\alpha)$，那么$SELECT(A\rightarrow \alpha) = FIRST(\alpha)\cup FELLOW(A)$
+- 若$\varepsilon \in FIRST(\alpha)$，那么$SELECT(A\rightarrow \alpha) = FIRST(\alpha)\cup FOLLOW(A)$
 
 #### 文法的等价变换
 
