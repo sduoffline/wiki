@@ -2,7 +2,7 @@
 title: 实时渲染
 description: 很惭愧，就做了一点微小的贡献
 published: true
-date: 2023-12-15T12:57:25.566Z
+date: 2023-12-15T14:18:00.597Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-15T09:04:29.818Z
@@ -1288,10 +1288,117 @@ $$
 
 ### LTC
 
+LTC（Linearly Transformed Cosines）能够帮助我们做微表面shading。
 
+LTC主要针对GGX，不过其他模型也可以。同时，LTC是做shading的，并不考虑做shadow。
+
+快速shading取决于不同类型的光源，LTC解决的是在微表面模型下，使用多边形光源去shading的结果。
+
+LTC 的核心思想是将微表面的NDF通过线性变换表示为一个余弦函数。与此同时，对多边形光源（指光源的形状）也可以通过类似的方法，线性变换为余弦表示。好处在于，在一个cosine lobe上对变换后的光源算积分，是有解析解的。
+
+我们发现：任何cosine lobe可以通过$M$变换成一个2D的BRDF lobe，而反过来，2D BRDF lobe可以通过$M^{-1}$变换成cosine lobe。做此变换，那就要将所有的方向都都给变换了，即$\omega_{i}$经过$M^{-1}$变换为了$\omega^{\prime}_{i}$。既然所有的方向都变换了，那么原本的积分域$P$经过$M^{-1}$也就变换为了$P^{\prime}$。
+
+我们假设这个多边形光源中的光是uniform的，那么：
+$$
+L(\omega_{o})=L_{i}\cdot
+\int_{P}F(\omega_{i})\,
+\mathrm{d}\omega_{i}
+$$
+因为假设uniform了，所以$L_{i}$是一个常数，可以直接拿到渲染方程外面去；BRDF项和$\cos$项写成一个大$F$，$P$就是多边形光源覆盖的立体角内。
+
+那么，因为：
+$$
+\omega_{i}=\frac
+{M\omega^{\prime}_{i}}
+{||M\omega^{\prime}_{i}||}
+$$
+这个式子就是对方向$\omega$做变换，然后归一化回单位球上。
+
+所以有：
+$$
+L(\omega_{o})=L_{i}\cdot
+\int_{P}\cos(\omega^{\prime}_{i})\,\mathrm{d}
+\frac
+{M\omega^{\prime}_{i}}
+{||M\omega^{\prime}_{i}||}
+$$
+引入Jacobian项，有：
+$$
+L(\omega_{o})=L_{i}\cdot
+\int_{P^{\prime}}\cos(\omega^{\prime}_{i})J
+\,\mathrm{d}\omega^{\prime}_{i}
+$$
+然后它是analytic的，也就是说有解析解，可以直接解出来。~~什么数学魔法~~
+
+------
+
+现在就缺这个变换矩阵$M$了。做法是对BRDF做预计算。
 
 ### Disney Principled BRDF
 
+微表面模型的缺点是：
+
+1.   无法表示世界上的所有材质（比如多层材质，如刷了清漆的木桌子）
+2.   不好用，不够artist-friendly
+
+Disney Principled的原则是：
+
+-   参数直观一些（别老是物理量，咱美工看不懂喵）
+-   参数越少越好
+-   最好是$0$到$1$的；为了营造一些特殊效果，倒也可以推到小于$0$或者大于$1$的
+-   组合起来也得健壮
+
+优点：
+
+1.   用起来很简单
+2.   因为能组合，所以参数空间很大，随便调，表现能力也强
+3.   开源实现（算是对各种BRDF的拟合吧）
+
+不过它不是那么physically-based，这问题也不大。
+
 ### NPR
+
+非真实感渲染（Non-Photorealistic Rendering, NPR）其实就是风格化。在RTR中，NPR当然也要求快速、可靠。
+
+实时NPR通常：
+
+-   来自于真实渲染
+-   抽象
+-   增强重要部分
+
+------
+
+先说说描边。描的边包括：
+
+-   Boundary 边界
+-   Crease 折痕
+-   Material edge 材质边界
+-   Silhouette edge 我把它翻译成剪影边缘。它必须是有多个面共享的边界，因此和Boundary区分开来，而且还得是物体外边界上
+
+用Shading的做法描silhoutte的边，我们知道观察法向如果和法线接近垂直，那么我们几乎就可以断定它就是silhoutte的。简而言之，就是造成grazing angle的地方。（Watertight的话）
+
+如果不想要因为设置了grazing angle而造成阈值跳变的话，可以用类似sigmoid的方式设置，就能有平滑过渡的描边。
+
+缺点是不同位置描边的粗细程度可能不同。
+
+用几何的方式描边，那就把所有背面的面都往外扩一圈，这样渲染到背面的时候都会往外扩一圈，从正面看过去就像是描好边了的样子。至于怎么外扩呢，方法就很多了，不谈。
+
+用图像后处理的方式描边，那就用类似于Sobel找出边缘，然后增强就好了。
+
+------
+
+再说说常见的：大量的色块。
+
+其实也很简单，就是对颜色做阈值化就行了。看起来就很卡通；如果想要更好的效果可以在不同的部分选取不同的阈值。
+
+------
+
+说说素描效果。
+
+做法是：先定义好不同密度的素描纹理，再在纹理图上查对应的笔触。之所以这么做，是因为素描效果首先体现了画面上格子的密度，其次我们还希望素描的笔触要比较连续。
+
+为了让素描效果不会因为镜头拉远，而缩小成一团黑色，可以对素描笔触做Mip-Map，只不过这个Mip-Map维持了笔触的密度，也就是说，如果我们把Mip-Map每一个子图放大到同样大小，那么它的密度“看上去”反而是不一样的。
+
+![Strokes_Surface_Stylization](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Strokes_Surface_Stylization.png)
 
 ## 光追，启动！
