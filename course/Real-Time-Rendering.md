@@ -2,7 +2,7 @@
 title: 实时渲染
 description: 很惭愧，就做了一点微小的贡献
 published: true
-date: 2023-12-15T09:04:29.818Z
+date: 2023-12-15T12:53:40.013Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-15T09:04:29.818Z
@@ -740,7 +740,7 @@ $$
 $$
 L_{i}=f_{r}\cdot\frac{\Phi}{\,\mathrm{d}A}
 $$
-其中$\Phi$是incident flux。~~总之是一些光学魔法。~~发现带进去$\mathrm{d}A$甚至能被消掉，甚好。
+其中$\Phi$是incident flux。~~总之是一些光学魔法~~ 发现带进去$\mathrm{d}A$甚至能被消掉，甚好。
 
 牵扯到visibility的问题，我们发现不可能对每个shading point，都去生成Shadow Map去检查visibility。不好算，那就不算了。（总之就是如此）
 
@@ -1084,7 +1084,7 @@ $$
 f(\mathbf{i},\mathbf{o})=\frac{\mathbf{F}(\mathbf{i},\mathbf{h})\mathbf{G}(\mathbf{i},\mathbf{o},\mathbf{h})\mathbf{D}(\mathbf{h})}{4(\mathbf{n},\mathbf{i})(\mathbf{n},\mathbf{o})}
 $$
 
--   **Fresnel项**$\mathbf{F}(\mathbf{i},\mathbf{h})$，决定从一个角度看去，有多少能量会被反射
+-   **Fresnel项** $\mathbf{F}(\mathbf{i},\mathbf{h})$，决定从一个角度看去，有多少能量会被反射
 -   **Shadowing-masking项** $\mathbf{G}(\mathbf{i},\mathbf{o},\mathbf{h})$，或者说**G项**，
 -   **Normals Distribution项** $\mathbf{D}(\mathbf{h})$，即微表面法线分布
 
@@ -1143,7 +1143,7 @@ $$
 
 ##### GGX
 
-GGX（Trowbridge-Reitz）相比于其他法线分布函数，如Beckmann，具有更好的性质。它在法线分布的尖锐区域和模糊区域之间具有平滑的过渡，因此可以更准确地模拟各种表面的反射特性。公式如下（应该是吧，闫令琪没说~~然后我笔记也没记~~）：
+GGX（Trowbridge-Reitz）相比于其他法线分布函数，如Beckmann，具有更好的性质。它在法线分布的尖锐区域和模糊区域之间具有平滑的过渡，因此可以更准确地模拟各种表面的反射特性。公式如下（应该是吧，闫令琪没说 ~~然后我笔记也没记~~）：
 $$
 D_{\text{GGX}}(\mathbf{h}) = \frac{\alpha^2}{\pi \left(\cos^2(\theta_{h}) (\alpha^2 + \tan^2(\theta_{h}))^2\right)}
 $$
@@ -1203,7 +1203,7 @@ $$
 
 ##### Kulla-Conty BRDF
 
-**Patch：**把丢失的能量补充回来！
+**Patch**：把丢失的能量补充回来！
 
 在RTR中的方法和离线渲染有所不同。基本的思想是，从一个微表面反射出去的光线，要么没有被其他微表面挡住（那就出去了，也就能被成功看到），要么被挡住（这意味着会有后续bounce，直到它离开微表面），于是“被遮挡”和“发生下次bounce”实际上可以等同。
 
