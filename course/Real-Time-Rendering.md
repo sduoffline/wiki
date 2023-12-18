@@ -2,7 +2,7 @@
 title: 实时渲染
 description: 很惭愧，就做了一点微小的贡献
 published: true
-date: 2023-12-18T02:52:05.046Z
+date: 2023-12-18T08:27:33.616Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-15T09:04:29.818Z
@@ -325,7 +325,7 @@ $k$的值可以调节软硬阴影的“硬度”。
 
 ## 实时环境光照
 
-环境光贴图有Sperical map和Cube map，但是我们在渲染这里暂时不关心。我们只关心一个shading point能得到来自各个方向的光。
+环境光贴图有Spherical map和Cube map，但是我们在渲染这里暂时不关心。我们只关心一个shading point能得到来自各个方向的光。
 
 可以称之为Image-Based Lighting（IBL），也就是说如何（在不考虑阴影的情况下）对一个点着色。
 
