@@ -2,7 +2,7 @@
 title: 实时渲染
 description: 很惭愧，就做了一点微小的贡献
 published: true
-date: 2023-12-15T14:18:00.597Z
+date: 2023-12-18T02:46:50.850Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-15T09:04:29.818Z
@@ -570,7 +570,7 @@ $$
 >
 >   弹幕说：实变函数满足Fubini定理，才可以交换顺序。
 
-然后，对于这个积分，$l_{i}$也是常数，因此可以拿出来。这样，积分式实际上就变成了light transport这个球面函数投影到某个basis function上的系数，这自然是可以预计算的。~~With some mathematical magic,~~只有lighting发生变化，那么任何一个shading point，都可以投影到任何一个basis function上去。比如说，投影到前$3$阶的$SH$，然后算出个数就可以了。
+然后，对于这个积分，$l_{i}$也是常数，因此可以拿出来。这样，积分式实际上就变成了light transport这个球面函数投影到某个basis function上的系数，这自然是可以预计算的。~~With some mathematical magic~~ 只有lighting发生变化，那么任何一个shading point，都可以投影到任何一个basis function上去。比如说，投影到前$3$阶的$SH$，然后算出个数就可以了。
 
 这样以后，即有：
 $$
