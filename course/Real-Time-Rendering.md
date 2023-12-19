@@ -2,7 +2,7 @@
 title: 实时渲染
 description: 很惭愧，就做了一点微小的贡献
 published: true
-date: 2023-12-19T10:11:21.622Z
+date: 2023-12-19T10:15:05.163Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-15T09:04:29.818Z
@@ -1517,9 +1517,9 @@ Temporal failure还会在shading中造成问题。
 
 约定：
 
--   噪声图像表示为$\tilde{C}$
+-   噪声图像表示为$\tilde{\text{C}}$
 -   滤波核$K$
--   输出filtered的图像$\bar{C}$
+-   输出filtered的图像$\bar{\text{C}}$
 
 #### Gaussian Filter
 
