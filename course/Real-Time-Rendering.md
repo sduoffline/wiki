@@ -2,7 +2,7 @@
 title: 实时渲染
 description: 很惭愧，就做了一点微小的贡献
 published: true
-date: 2023-12-18T08:27:33.616Z
+date: 2023-12-19T10:11:21.622Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-15T09:04:29.818Z
@@ -1402,3 +1402,241 @@ Disney Principled的原则是：
 ![Strokes_Surface_Stylization](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Strokes_Surface_Stylization.png)
 
 ## 光追，启动！
+
+光追可以做的事几乎囊括了上文中RTR所有的方面，包括软阴影、反射（甚至于到specular材质）、环境光遮蔽、全局光照。
+
+光追的本质是tree traversal，指对光线与场景中的物体相交进行有效处理的过程。光线追踪算法通常使用一种加速结构，如包围盒层次结构（Bounding Volume Hierarchy，BVH）或者KD-Tree来组织场景中的物体，以便**快速确定光线与物体的相交关系。**总之这个事情GPU不好做。RTX是加的一块硬件专门做光追。
+
+------
+
+一个概念：spp（sample per pixel）。
+
+![The_Simplest_1_spp_Ray_Tracing](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Simplest_1_spp_Ray_Tracing.png)
+
+如图所示，最简单的1spp光路中，每个像素至少要有3条光线，包括：
+
+-   从camera打到primary hitpoint的rasterization用的光线（其实效果和光栅化一致，所以未必一定要trace一条primary光线，不如直接光栅化一遍。因此不称之为ray，而写的是rasterization。光栅化和trace primary ray等价，但是光栅化显然更快）
+-   primary hitpoint的shadow ray，也就是连到光源看有没有遮挡用的光线
+-   从primary hitpoint到secondary hitpoint的一次bounce
+-   对secondary hitpoint发shadow ray，看看有没有遮挡
+
+Path Tracing本身是一种Monte Carlo积分方法，会有噪声。显然，1spp的光追，其噪声是极其恐怖的。**所以，RTRT的核心科技在于降噪（Denoising）。**
+
+### 降噪
+
+目标：
+
+-   质量（不要overblur，不要artifacts，保持细节）
+-   速度（希望小于2ms）
+
+评价为几乎不可能。
+
+实现的关键在于时域滤波。总是假设时序上，上一帧是已经denoised的了，同时假设整个序列是相当连续的，没有突变。我们希望重用已经处理好的上一帧，来快速实现对当前帧的降噪。
+
+一个概念：Motion Vector。它表示的是同一个地方，从前一帧移动到下一帧的位移。运用motion vector，可以找到上一帧的对应位置。
+
+由于我们认为场景基本连续，shading也基本连续，因此上一帧已经降噪好了的可以拿来复用。
+
+------
+
+G-Buffer，这里的G表示Geometry。它可以存包括诸如直接光照（深度）的信息、法向信息、Diffuse Albedo、世界坐标等。**注意：G-Buffer的信息来自屏幕空间。**
+
+我们认为生成G-Buffer是非常轻量级的操作。G-Buffer在用光栅化代替primary ray tracing的时候就顺便拿到了。
+
+### Back Projection
+
+对于当前帧$i$上的像素$x$，我们想知道在$i-1$帧，哪一个像素，它包含了当前帧上像素$x$。Back Projection就是一种求解的方法。
+
+那么首先我们要知道当前帧$i$上的像素$x$的世界坐标。（这个直接从G-Buffer拿就行了，没有的话，世界坐标$s=M^{-1}V^{-1}P^{-1}E^{-1}x$，即对GAMES101中的MVP-视口变换做了一次逆变换；MVP变换是先$M$后$V$后$P$，因此在这个式子中是先$P^{-1}$，当然深度信息也是要的）
+
+如果从上一帧到当前帧有：$s^{\prime}\xrightarrow{T}s$，那么，当然有：$s^{\prime}=T^{-1}s$
+
+由于整个序列的渲染我们都知道，因此$T$也是知道的。
+
+现在上一帧中$s^{\prime}$的世界坐标已知，我们要求其屏幕空间坐标，使用$x^{\prime}=E^{\prime}P^{\prime}V^{\prime}M^{\prime}s^{\prime}$。$M^{\prime}$、$V^{\prime}$、$P^{\prime}$都是上一帧的MVP矩阵，$E^{\prime}$也是上一帧的视口变换矩阵。
+
+### Temporal Denoising
+
+已经通过Back Projection得到上一帧的信息了，开始处理当前帧。
+
+约定$\tilde{x}$表示$x$是unfiltered，而$\bar{x}$表示filtered。
+
+那么，当前帧（第$i$帧）中，先做空域滤波：$\bar{C}^{(i)}=Filter\left[\tilde{C}^{(i)}\right]$。
+
+这样以后，运用时域的信息，做：$\bar{C}^{(i)}=\alpha\bar{C}^{(i)}+(1-\alpha)\bar{C}^{(i)}$，这就是将上一帧和当前帧做了一个线性的blending。一般来说，$\alpha$取$0.1$到$0.2$这样。
+
+提到了为什么一张undenoised的光追渲染图看起来比较暗，原因是因为很多点的值超过了255，被直接clamp掉了，实际上就丢失了能量。Filtering本身不会使一张图变亮或者变暗。
+
+### Temporal Failure
+
+-   显然场景一切换（不只是场景，物体、光源等都是，但凡是突变了都是），直接就坏事了（需要burn-in period）
+-   往后走：屏幕空间（从边缘）纳入了越来越多的信息，temporal肯定是搞不定的
+-   Disocclusion：随着时间推移，原本被遮挡的东西突然出现了。但是这种情况下，通过motion vector找到的就不是正确的像素了（因为在上一帧它还被挡住，自然指向的是深度更浅的东西）
+
+~~其实主要是Screen Space的问题（~~
+
+强行复用，会造成lagging（拖尾）现象。
+
+解决方法主要有两种：clamping和detection。但它们都重新引入了噪声（也就是当前帧更noisy了）
+
+**Clamping**
+
+对于公式$\bar{C}^{(i)}=\alpha\bar{C}^{(i)}+(1-\alpha)\bar{C}^{(i)}$，我们的做法是：
+
+应用上一帧信息的时候，不管上一帧的值是什么，都将其拉近到足够接近当前帧的结果，再线性blending。其实就是将上一帧的结果限制到一个范围之内。比如，可以取当前帧当前点的7x7范围内，算一个均值、方差，然后clamp到两个或三个$\sigma$之内。
+
+**Detection**
+
+用一个类似于`object id`的东西来探测temporal failure。基本思想是当motion vector指向了另一个物体表面时，就认为它不再靠谱。
+
+不再靠谱时，可以做的事包括：调整$\alpha$（因为认为上一帧不再靠谱了）
+
+-----
+
+Temporal failure还会在shading中造成问题。
+
+经典例子：
+
+![Temporal_Failure_in_Shading](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Temporal_Failure_in_Shading.png)
+
+背后是一个移动的面光源，柱子不动。这样实际上几何没有任何变化（即地板、柱子、camera等等），任何像素的motion vector严格来说都是零。
+
+这就造成了会重用上一帧阴影的值，于是造成了阴影拖尾，或者说detached shadows。
+
+在glossy场景中，则有：
+
+![Temporal_Failure_in_Shading_Glossy](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Temporal_Failure_in_Shading_Glossy.png)
+
+地板不变时，当上面的物体移动，那么反射出来的东西也会有同样的问题，即detached / lagging shadows。
+
+总而言之，就是几何没变但shading剧烈地变了，motion vector不足以跟上表达这种变化。
+
+### 空域滤波
+
+显然光时域是不够的，所以空域滤波也是很重要的。在RTRT中的空域滤波也是平滑掉noise，算是蛮low pass filter的。
+
+约定：
+
+-   噪声图像表示为$\tilde{C}$
+-   滤波核$K$
+-   输出filtered的图像$\bar{C}$
+
+#### Gaussian Filter
+
+解决Monte Carlo产生的噪声，最简单的做法是Gaussian Filter。
+
+闫令琪给出的伪代码：
+
+```python
+for each pixel i
+    sum_of_weights = sum_of_weighted_values = 0.0
+    for each pixel j around i
+    	Calculate the weight w_ij = G(|i - j|, sigma)
+        sum_of_weighted_values += w_ij * C^{input}[j]
+        sum_of_weights + w_ij
+    C^{output}[i] = sum_of_weighted_values / sum_of_weights
+```
+
+也没什么特殊的，数字图像处理该讲都讲了。
+
+#### Bilateral Filter
+
+Gaussian滤波的缺点是，整张图会被平等地模糊掉。显然我们更希望能保持一些高频信息，比如边界。
+
+我们可以将“边界”理解为：颜色剧烈变化的地方。
+
+双边滤波的保边的基本思想是：如果两个像素的颜色差距不大，那就按照Gaussian的来，否则那就很可能是边界，不希望边界那头会对这头有所贡献。
+$$
+w(i,j,k,l)=\exp{(-\frac{(i-k)^{2}+(j-l)^{2}}{2\sigma_{d}^{2}}-\frac{||I(i,j)-I(k,l)||^{2}}{2\sigma_{r}^{2}})}
+$$
+其中$(i,j)$是一个点的坐标，$(k,l)$是另一个。$I(i,j)$表示的是像素的值。这样，当两个像素的颜色差距过大时，就会抑制算出来的权重，使得贡献变小。
+
+然而，仅凭颜色差距未见得能区分好噪声和边界，因此双边滤波还有所欠缺。
+
+#### Joint Bilateral Filter
+
+JBF（联合双边滤波）和Gaussian Filter（仅考虑距离）、Bilateral Filter（考虑距离和颜色差别）相比，考虑了更多的特征。JBF特别适用于Monte Carlo光线追踪产生的噪声。
+
+通过G-Buffer，我们有很多特征可以拿来指导滤波，更何况，G-Buffer本身是完全没有噪声的。
+
+------
+
+说起来，Bilateral Filter中考虑颜色差距，实际上还是用Gaussian函数算的。但是，未必一定要用Gaussian函数。
+
+![Different_Functions_to_Guide_the_Filter_Kernel](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Different_Functions_to_Guide_the_Filter_Kernel.png)
+
+<div align="center"><i>一切随着距离衰减的函数都可以</i></div>
+
+应当这样考虑JBF：
+
+![The_Info_JBF_Uses_In_RTRT_Denoising](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Info_JBF_Uses_In_RTRT_Denoising.png)
+
+从G-Buffer中能有深度和法向信息。颜色也有。这三个信息的用法直接看图就行了，很直观。
+
+可以说，多个参数共同影响、贡献，其实就相当于几个Gaussian函数相乘。比如Bilateral滤波器中，两个数在$\exp$中相减，拆出来就是相乘。控制的$\sigma$就是各自的$\sigma$。
+$$
+w(i,j,k,l)=\exp{(-\frac{(i-k)^{2}+(j-l)^{2}}{2\sigma_{d}^{2}}-\frac{||I(i,j)-I(k,l)||^{2}}{2\sigma_{r}^{2}})}
+$$
+
+------
+
+当Kernel size比较大的时候，如何加速？
+
+FFT到频域上，相乘再IFFT回来，对于GPU来说不是一个好主意，因为FFT虽然在CPU上挺快的，但在GPU上却不是这样。
+
+一个方法：拆成水平和竖直两趟，如果是2D Gaussian函数的话。
+
+可以这么做是因为Gaussian函数本身就是用一维Gaussian函数定义的：
+$$
+G_{2D}(x,y)=G_{1D}(x)\cdot G_{1D}(y)
+$$
+以及，滤波和卷积本质上是一样的，而：
+$$
+\iint F(x_{0},y_{0})G_{2D}(x_{0}-x,y_{0}-y)
+\,\mathrm{d}x\,\mathrm{d}y\\
+=\int(\int F(x_{0},y_{0})G_{1D}(x_{0}-x)\,\mathrm{d}x)G_{1D}(y_{0}-y)\,\mathrm{d}y
+$$
+从计算机科学的角度看，由于分开两趟做，需要多存储一个中间结果，因此相当于是空间换时间。
+
+![Separate_Gaussian_Passes](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Separate_Gaussian_Passes.png)
+
+可惜这个性质并不是所有函数都有。2D Gaussian函数可以，但是Bilateral滤波核，仅仅是两个Gaussian函数相乘，就不那么好拆分了，更别说JBF了。
+
+------
+
+第二个加速方法：用逐步增大的filter size做多趟。
+
+一个例子是a-trous wavelet，基本思想是：
+
+-   多趟，每一趟都是5x5的滤波器
+-   每一趟中的滤波器是有不同的间隔的
+
+![A-Trous-Wavelet](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A-Trous-Wavelet.png)
+
+（说起来抽象，不会去看课程视频）
+
+使用大滤波核实际上是要抛弃更多频率，而采样是在搬移频谱。
+
+对于采样来说，采样率决定了“搬移”多远，如果采样比较稀疏，那么频谱和频谱的距离就小，如果特别稀疏，那么频谱就会混叠，表现为走样，或者说filter出来有问题。
+
+这个方法每一趟在去除掉一些频率，而巧妙设计的间隔保证了恰好“搬移”频谱的间隔是上一趟pass留下来的最高频率的两倍，保证了不会产生走样。~~什么魔法~~
+
+缺点是我们很可能用的不是朴素的Gaussian函数，因此原先的高频并没有被完全去除，自然也就打破了上面的分析。
+
+### Outlier Removal
+
+由于Monte Carlo产生的噪声可能超级亮（比如说远大于255），这样滤波器也救不了，因为它的值实在是太强了。它会被滤波器扩的更大（blocky）。
+
+这些超级亮的噪声就是outlier。我们希望在滤波前就能干掉outlier，即使这会导致能量不守恒。
+
+检测outlier的过程：
+
+1.   对每个pixel，看它的周围（比如7x7）
+2.   算颜色的均值和方差
+3.   那就认为它应该落在$[\mu-k\sigma,\mu+k\sigma]$中，否则就是outlier
+
+通常$k\in[1,3]$.
+
+至于说removal，其实不完全算，因为是将其clamp到算出来的范围内。
+
+工业界的clamp更为复杂。
