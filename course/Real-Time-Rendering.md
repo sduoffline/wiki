@@ -2,7 +2,7 @@
 title: 实时渲染
 description: 很惭愧，就做了一点微小的贡献
 published: true
-date: 2023-12-20T00:23:08.625Z
+date: 2023-12-20T04:35:42.412Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-15T09:04:29.818Z
@@ -13,6 +13,32 @@ dateCreated: 2023-12-15T09:04:29.818Z
 > 「我即将融入剧烈争斗的大人世界，要在那里边孤军奋战，必须变得比任何人都坚不可摧。」
 
 ## 复习向
+
+### 复习课笔记
+
+1.   MSM了解即可
+2.   环境光直接光照：Split Sum；环境光全局光照：PRT
+3.   RSM / LPV是diffuse only，而VXGI可以做glossy的次级光源
+4.   LPV之所以加速，是因为减少了查询（指在SM上查询多个pixel）
+5.   SSAO假设环境光uniform；SSDO能实现漫反射，有色溢
+6.   看到这里默写一下Microfacet BRDF公式（
+7.   F项和基础反射率（即颜色）有关，G项和D项和roughness有关
+8.   Split Sum和Kulla-Conty生成的预计算表，其两个维度都是roughness和入射角度（可以带上余弦）
+9.   BRDF的性质包括：非负；线性，多个BRDF可以相加；可逆，入射与出射可以互换；能量守恒
+10.   Mipmap查一次区域，要做一次纹理查询；SAT则要4次
+11.   Shadow Volume不需要可编程的渲染管线，从SM开始则要（开始写shader）
+12.   Shadow Volume第一趟也是先渲染拿到depth buffer，第二趟做depth-pass或者depth-fail。这样以后，如果值为0就说明不在阴影中
+13.   SM把渲染方程中的Visibility项拿出来了
+14.   PCSS中，blocker向光源移动，filter size变大，阴影变软。想一想那个相似三角形的式子
+15.   VSSM的第一步（blocker search）是用加起来等于$z_{\text{avg}}$那个式子做的，比例系数用Chebyshev不等式估计，并且假设$z_{\text{unocc}}=t$，也就是说非遮挡物的深度都和 shading point 的深度一致；第三步（PCF）的加速方法是赌正态分布，然后Chebyshev。
+16.   VSSM的第一步和第三步都是一次纹理查询（不考虑Mipmap间的插值的话），并且这里不存在采样
+17.   因此，VSSM是无噪声的（因为没有采样），而PCSS是有的
+18.   环境光直接光照是没有考虑Visibility的，拎出了渲染方程中的Light项（当glossy时积分域小，当diffuse时smooth）
+19.   Kulla-Conty近似的时候，本来是要五维的，有点高。但是我们把BRDF拆了，只记录roughness，这是因为BRDF的描述基于 NDF，而NDF的性质是由roughness决定的。这样，roughness加上角度就构成了一张二维表
+20.   PRT是唯一一个能实现环境光贴图下shadow的算法
+21.   RSM要存的信息：Depth + 位置、法向、flux
+22.   RSM是要区域查询的，会采样，因此我们就去搞LPV了
+23.   再想想SSR
 
 ### Shadow
 
