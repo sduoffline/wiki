@@ -2,13 +2,21 @@
 title: 计算机动画
 description: 真是数数又媒媒啊
 published: true
-date: 2023-12-25T15:10:38.198Z
+date: 2023-12-25T15:12:16.031Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-25T14:44:25.414Z
 ---
 
 # Notes on Computer Animation Technology
+
+> 「不能逃避……不能逃避……」
+>
+> 「不能逃避。」
+>
+> 「不能逃避！」
+>
+> 「真嗣，不可以逃避！」
 
 ## Course Info
 
@@ -206,19 +214,19 @@ dateCreated: 2023-12-25T14:44:25.414Z
 计算机三维动画制作流程：
 
 ```mermaid
-flowchart
-A(剧本)--->B[故事板]
-B--->C[角色设计]
-B--->D[场景设计]
-C--->E[建模]
-D--->F[场景建模]
-E--->G[材质贴图]
-F--->G
-G--->H[动画设定]
-H--->I[渲染输出]
-I--->J[剪辑合成]
-K[音乐音效]--->J
-J--->L[最终成品]
+flowchart LR
+A(剧本)-->B[故事板]
+B-->C[角色设计]
+B-->D[场景设计]
+C-->E[建模]
+D-->F[场景建模]
+E-->G[材质贴图]
+F-->G
+G-->H[动画设定]
+H-->I[渲染输出]
+I-->J[剪辑合成]
+K[音乐音效]-->J
+J-->L[最终成品]
 ```
 
 ------
