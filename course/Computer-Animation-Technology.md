@@ -2,7 +2,7 @@
 title: 计算机动画
 description: 真是数数又媒媒啊
 published: true
-date: 2023-12-25T15:19:37.258Z
+date: 2023-12-25T15:25:33.202Z
 tags: 
 editor: markdown
 dateCreated: 2023-12-25T14:44:25.414Z
@@ -854,6 +854,7 @@ $$
 
 - 如果曲线在$t$处具有$GC^{2}$连续性，则曲线在$t$处，通过适当参数化，该曲线也具有$C^{2}$连续性
 - 曲线在$t$处具有$GC^{2}$连续性的充要条件是：$\exist\alpha>0,\beta$，使得同时满足：
+
   $$
   \begin{aligned}
   P(t_{0}^{-})&=P(t_{0}^{+})\\
@@ -861,6 +862,7 @@ $$
   P^{\prime\prime}(t_{0}^{-})&=\alpha^{2} P^{\prime\prime}(t_{0}^{+})+\beta P^{\prime}(t_{0}^{+})
   \end{aligned}
   $$
+
   取$\alpha=1,\beta=0$，则曲线在$t$处具有$C^{2}$连续性。（幻灯片上是这么写的）
 
 ------
