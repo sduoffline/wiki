@@ -2,13 +2,11 @@
 title: 软件工程
 description: 
 published: true
-date: 2023-09-14T08:33:16.102Z
+date: 2023-12-27T13:10:33.292Z
 tags: 
 editor: markdown
 dateCreated: 2023-09-13T06:20:57.474Z
 ---
-
-# 软件工程
 
 ## 0. 面向考试
 
