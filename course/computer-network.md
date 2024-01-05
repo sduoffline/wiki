@@ -6,7 +6,7 @@
 
 理论上：
 
-1. 单项选择题（每题1分，共10分），有两道英问题。
+1. 单项选择题（每题1分，共10分），有两道英文题。
 2. 填空题（每空1分，共20分）
 3. 计算题（每题5分，共10分）
 4. 筒答题（每题5分，共15分）
@@ -25,7 +25,7 @@
 
 - 计算机网络的定义、P2P
 - **网络硬件（broadcasting、multicasting、unicasting、LAN、MAN、WAN、Internet、packet switching）**
-- 网络软件（**protocol、layer、interface、service**、错误控制、流量控制、面向连接与无连接的服务、可靠和不可靠的服务、服务与协议的关系、**OSI参考模型、TCP/IP参考模型**）
+- 网络软件（**protocol**、**layer**、**interface**、**service**、错误控制、流量控制、面向连接与无连接的服务、可靠和不可靠的服务、服务与协议的关系、**OSI参考模型、TCP/IP参考模型**）
 - 802协议、网络标准化
 
 #### 物理层
@@ -82,11 +82,11 @@
 
 2. 【2014，2015，2017，2020，2022，2023】计算CRC校验。
 
-   > 看[这篇](https://www.zhaojun.ink/archives/1022学。
+   > 看[这篇](https://www.zhaojun.ink/archives/1022)学。
 
 3. 【2016】划分子网，通过子网掩码计算IP范围。
 
-   > 可以看[这个视频]( https://www.bilibili.com/video/BV1RJ411x7xk/?share_source=copy_web&vd_source=3ec2803605b237e83bdefe0c4f64ab4d)和[这个](https://www.bilibili.com/video/BV1T7411q76N)，最简单的应该是直接看这个[博文](https://blog.csdn.net/gl620321/article/details/106674804)。
+   > 可以看[这个视频](https://www.bilibili.com/video/BV1RJ411x7xk/)和[这个](https://www.bilibili.com/video/BV1T7411q76N)，最简单的应该是直接看这个[博文](https://blog.csdn.net/gl620321/article/details/106674804)。
 
 4. 【2016，2017】Go-Back N协议需要重发的帧数。
 
@@ -100,7 +100,7 @@
 
 #### 简答题
 
-1. 【2015，2020，2022】漏桶和令牌痛。
+1. 【2015，2020，2022】漏桶和令牌桶。
 2. 【2016，2017，2020】虚电路交换和分组交换技术。
 3. 【2016，2017，2020】网桥/路由器/交换机的工作原理。
 4. 【2016，2022】DNS的工作原理。
