@@ -2,7 +2,7 @@
 title: 计算机科学引论
 description: 
 published: true
-date: 2024-01-06T07:49:24.815Z
+date: 2024-01-06T16:29:17.348Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-06T07:49:02.366Z
@@ -71,8 +71,6 @@ dateCreated: 2024-01-06T07:49:02.366Z
 - Portable Internet access includes all of the following EXCEPT WIFI
 
 - A compute-intensive problem runs on a supercomputer
-
-- 
 
 ## 专题
 
