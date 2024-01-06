@@ -1390,7 +1390,38 @@ Backoff Algorithm）方案描述如下：
 
 #### 帧格式
 
+![The_Structure_of_Ethernet_Frame](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Structure_of_Ethernet_Frame.png)
+
+两种以太网 MAC 帧格式标准：
+
+- DIX Ethernet V2
+- IEEE 802.3
+
+一般而言以前者为常用标准。
+
+| Structure               | 结构                               | 长度    |
+| ----------------------- | ---------------------------------- | ------- |
+| DA, Destination Address | 目标地址                           | 6B      |
+| SA, Source Address      | 目标地址                           | 6B      |
+| Type                    | 类型                               | 2B      |
+| Data                    | 数据（其实就是IP数据报）           | 0~1500B |
+| Pad                     | 间隔（用来保证合法地满足最小帧长） | 0~46B   |
+| Checksum                | 校验码                             | 4B      |
+
+有的时候把Data和Pad合计为Data字段，长度至少为46B；另外，值得注意的是，DA与SA都是6B，这实际上也印证了MAC地址的长度。
+
+MAC帧无效的情况：
+
+- 数据字段的长度与长度字段的值不一致
+- 帧的长度不是整数个字节
+- 用收到的帧检验序列 FCS 查出有差错
+- 数据字段的长度不在 46 ~ 1500 字节之间
+
+对于检查出的无效 MAC 帧就简单地丢弃。以太网不负责重传丢弃的帧。
+
 #### 曼彻斯特编码
+
+前面说过了，导播切台！（雾
 
 ### 无线局域网
 
