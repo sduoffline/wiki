@@ -1311,6 +1311,10 @@ Slotted ALOHA 就不一样了，吞吐量$S=G\cdot e^{-G}$。分槽使得碰撞�
 
   p-坚持CSMA协议可以有效分解潜在的可能的冲突。由于每个站点都运行这个协议，选择了不同的发送时间槽，两个或多个站同时选择一个时间槽的概率随着$p$的变小而降低。可以提高吞吐量，但可能**带来更大的延迟**。
 
+![The_Comparison_Between_Multiplexing_Algorithms](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Comparison_Between_Multiplexing_Algorithms.png)
+
+显然，当p-坚持的概率$p$趋近于1时，p-坚持CSMA协议的性能趋近于1-坚持CSMA协议；当$p$趋近于0时，自然在吞吐量较大时能避免冲突（因为试图在发数据的很多，但是发出来的概率比较低，所以冲突少），但是缺点是会带来较大的延迟。
+
 #### CSMA/CD
 
 先听后说（CSMA）协议要求所有有数据发送的站点侦听到信道空闲时才能发送数据，从而不会打扰已有的通信过程，但是**不能完全避免冲突**（不能保证站点发送一定成功，或成功获得信道的使用权），尤其是当多个站点同时侦听到信道空闲。
