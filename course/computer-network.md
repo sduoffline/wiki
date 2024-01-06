@@ -923,6 +923,82 @@ PSTN使用（虚）电路交换，因特网使用分组交换，如下图所示�
 3. 如果到达了一个有效确认帧，则发送方从它的网络层获取下一个数据包，并把它放入缓冲区覆盖掉原来的包，同时他还会递增帧的序号。如果到达了一个受损的确认帧，或者计时器超时，则缓冲区和序号都不作任何改变，以便重传原来的帧。
 4. 当一个有效帧到达接收方时，接收方首先检查它的序号，确定是否为重复数据包。如果不是，则接收该数据包并将它传递至网络层，然后生成一个确认帧。重复帧和受损帧都不会被传递给网络层，但它们的到来会导致最后一个正确接收到的数据帧的确认被重复发送，返回给发送方，以便发送方做出前进到下一帧或重发那个受损帧的决策。
 
+先来点代码：
+
+首先，有：
+
+```c
+#define MAX_SEQ 1
+typedef enum { frame_arrival,
+               cksum_err,
+               timeout } event_type;
+```
+
+这是因为我们已经约定了帧头中的序号只有一位，所以最大序号就是1。事件只可能有三种，即：
+
+1. 帧到达
+2. 校验和出错
+3. 超时
+
+于是有sender：
+
+```c
+void sender3(void) {
+    seq_nr next_frame_to_send;  // 正在发送的帧的序号
+    frame s;
+    packet buffer;
+    event_type event;
+
+    next_frame_to_send = 0;       // 初始化
+    from_network_layer(&buffer);  // 从网络层获取初始数据
+    while (true) {
+        s.info = buffer;
+        s.seq = next_frame_to_send;
+        to_physical_layer(&s);
+        start_timer(s.seq); // 启动定时器
+        wait_for_event(&event);
+        if (event == frame_arrival) {
+            from_physical_layer(&s);    // 拿ACK
+            if (s.ack == next_frame_to_send) {  // 收到对应的ACK
+                stop_timer(s.ack);
+                from_network_layer(&buffer);    // 这个“停-等”已经顺利完成，可以从网络层拿下一个数据了
+                inc(next_frame_to_send);    // 自增帧序号
+            }
+        }
+    }
+}
+```
+
+对于receiver：
+
+```c
+void receiver3(void) {
+    seq_nr frame_expected;
+    frame r, s;
+    event_type event;
+
+    frame_expected = 0;
+    while (true) {
+        wait_for_event(&event);
+        if (event == frame_arrival) {
+            from_physical_layer(&r);    // 拿到帧
+            if (r.seq == frame_expected) {  // 就是你了！
+                to_network_layer(&r.info);
+                inc(frame_expected);
+            }
+            s.ack = 1 - frame_expected; // 这样可以说明ACK了哪个帧
+            to_physical_layer(&s);
+        }
+    }
+}
+```
+
+这个协议能够实现重传，是因为：
+
+- 如果拿到正确帧，相安无事
+- 如果拿到校验和错误，啥也干不了，等超时
+- 如果拿到超时（或者说上一种情况的超时），最终会自动超时重传
+
 ### 滑动窗口协议
 
 滑动窗口协议在基本数据链路协议的基础上，将单工通信提升到全双工通信，充分利用了通信带宽，其核心技术是捎带确认：
