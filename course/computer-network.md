@@ -443,6 +443,14 @@ IEEE 802中定义的服务和协议限定在OSI 模型的最低两层（即物�
 
 **分贝（dB）**：通常把信噪比表示成对数的形式$10\log_{10}{\frac{S}{N}}$，对数的取值单位称为分贝。 信噪比为100可表示为 20dB。
 
+------
+
+一些术语：
+
+- **码元**（Symbol）：承载信息量的基本信号单位。显然，$N$ 级码元需要的比特数$n$（bits）有关系$n=\log_{2}N$
+- Baud Rate：码元传输速率，单位为波特（Baud），即每秒传输的码元数。
+- 比特率（Bit Rate）：单位时间内传输的比特数，单位为比特/秒（bps）。比特率与码元传输速率的关系为：$\text{bit rate}(bps)=\text{Baud Rate}\times n$。这里的$n$就是上面的比特数。
+
 #### 信道的最大数据传输速率
 
 计算信道的最大数据传输速率可以使用尼奎斯特定理（Nyquist theorem）和香农定理（Shannon theorem）。
@@ -547,11 +555,13 @@ IEEE 802中定义的服务和协议限定在OSI 模型的最低两层（即物�
 
 #### 调制
 
-数字信号的调剂编码也有三种：
+数字信号的调制编码也有三种：
 
 - 调幅（Amplitude Shift Keying, ASK）：用载波的两个不同振幅表示0和1。
 - 调频（Frequency Shift Keying, FSK）：用载波的两个不同频率表示0（1.2KHz）和1（2.4KHz）。
 - 调相（Phase Shift Keying, PSK）：用载波的起始相位的变化表示0 (同相）和1（反相）。
+
+> 所谓 Keying，就是调制信号的过程。
 
 ![三种调制](https://s2.loli.net/2024/01/04/XQo9C4KUJlEgRPW.png)
 
