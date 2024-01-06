@@ -1,8 +1,8 @@
 ---
-title: 计算机课学引论
+title: 计算机科学引论
 description: 
 published: true
-date: 2024-01-06T07:49:02.366Z
+date: 2024-01-06T07:49:24.815Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-06T07:49:02.366Z
