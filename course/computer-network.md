@@ -2,7 +2,7 @@
 title: 计算机网络
 description: 春奈：为什么你写那么多中文术语啊喂？！
 published: true
-date: 2024-01-06T08:07:07.194Z
+date: 2024-01-06T14:09:53.823Z
 tags: 
 editor: markdown
 dateCreated: 2023-09-24T15:47:27.336Z
@@ -117,7 +117,7 @@ TODO：
 
 4. 【2016，2017】Go-Back N协议需要重发的帧数。
 
-   > 滑动窗口协议的问题可以观看湖科大教书匠的[GBN协议](https://www.bilibili.com/video/BV1HJ411w7s)和[SR协议](https://www.bilibili.com/video/BV1nJ411u7aA的讲解
+   > 滑动窗口协议的问题可以观看湖科大教书匠的[GBN协议](https://www.bilibili.com/video/BV1HJ411w7s)和[SR协议](https://www.bilibili.com/video/BV1nJ411u7aA)的讲解
 
 5. 【2017】分析使用了帧填充技术的一个帧片段哪里有问题。
 
