@@ -1584,6 +1584,25 @@ ARP的两个优化：
 3. 图 6-6 这种情况是主机 2 给主机 1 的 DR（Disconnection Request）的应答丢失了，这种情况下，当主机 1 的计时器超时后，主机 1 会重新发送 DR。
 4. 图 6-7 这种情况是主机 2 给主机 1 的 DR（Disconnection Request）的应答和主机 1 后续的 DR 都丢失了，这种情况下，主机 1 经过 N 次重传之后，就会放弃，并且释放连接；而主机 2 在计时器超时之后也会释放连接。
 
+### UDP与TCP的比较
+
+在详细讨论 UDP 和 TCP 时，二者常被提及的一个特点就是 UDP 面向报文、TCP面向字节流，如下图所示。
+
+![UDP与TCP的通信特点](https://s2.loli.net/2024/01/06/43yBxTq9klsMbvD.png)
+
+可以看到：
+
+- UDP 只是对上层报文添加了 Header，所以是面向应用报文的传输。
+- TCP 会将上层数据以字节为单位保存在缓冲区中，并按照一定规则选择其中的数据进行发送，因此 TCP 的操作都是以字节流为基础，这也是 TCP 能够实现拥塞控制、可靠传输等特性的原因。
+
+在提供的服务上，UDP 提供了无连接不可靠的传输服务，TCP则是面向连接的可靠传输服务：
+
+![服务特性](https://s2.loli.net/2024/01/06/qeHbt7GrEzV9fWF.png)
+
+在头部结构上二者具有显著的区别：
+
+![UDP与TCP头的区别](https://s2.loli.net/2024/01/06/BHCKq1YoA2v7ucm.png)
+
 ### UDP
 
 UDP（User Datagram Protocol），用户数据报协议。
