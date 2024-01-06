@@ -1273,6 +1273,24 @@ Medium Access Control，MAC 子层还是**属于数据链路层**，是它的一
 
 ![纯ALOHA示意图](https://s2.loli.net/2024/01/03/kwUOCsm7vhofEDX.png)
 
+进一步讲，纯ALOHA的系统吞吐量$S=G\cdot e^{-2G}$，其中$G$是系统负载，也就是平均下来每帧时内产生的帧数；$S$是每帧时内成功传输的帧数。显然，首先就有$S\le 1$。
+
+![The_Curve_by_Pure_ALOHA](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Curve_by_Pure_ALOHA.png)
+
+在$G=0.5$时，函数取到极值，反正不到$20\%$的。
+
+------
+
+Slotted ALOHA 就不一样了，吞吐量$S=G\cdot e^{-G}$。分槽使得碰撞危险减少了一半。
+
+![The_Curve_by_Slotted_ALOHA](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Curve_by_Slotted_ALOHA.png)
+
+极值点在$G=1$处，到了$40\%$不到的水平。
+
+![The_Comparison_Between_Two_ALOHAs](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Comparison_Between_Two_ALOHAs.png)
+
+总的来说，就酱。
+
 #### CSMA
 
 为了不打扰已有的通信，站点在发送数据之前首先侦听信道。如果信道空闲，则发送；如果信道忙，代表有其它站点在发送数据，则不能发送，等待一段随机时间发送。
