@@ -1159,6 +1159,8 @@ void protocol4(void) {
 
 ![Go_Back_N_Example](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Go_Back_N_Example.png)
 
+注意，下图中`NAK 2`后的多个`ACK 1`，这个就是“累积确认”法。直到`ACK 2`到了，那么`Frame 1, 2, 3, 4, 5`都到了，可以发`ACK 5`。
+
 参考视频：https://www.bilibili.com/video/BV1fU4y1h7Sw
 
 > 直接静音三倍速速通就行了
@@ -1198,6 +1200,8 @@ Medium Access Control，MAC 子层还是**属于数据链路层**，是它的一
 1. 频分多路复用（FDM）
 2. 时分多路复用（TDM）
 3. 波分多路复用（WDM）
+
+静态 FDM 性能差，因为它会 N 倍放大延迟，即：$T_{\text{FDM}}=NT$。其中 $T$ 是 FDM 之前原本的平均延迟。显然，这一切对于 TDM 也是一样的。
 
 #### 基本假设
 
