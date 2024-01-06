@@ -1011,7 +1011,7 @@ void receiver3(void) {
 
 ### 滑动窗口协议
 
-滑动窗口协议在基本数据链路协议的基础上，将单工通信提升到全双工通信，充分利用了通信带宽，其核心技术是捎带确认：
+滑动窗口协议在基本数据链路协议的基础上，将单工通信提升到全双工通信，充分利用了通信带宽，其核心技术是捎带确认。
 
 **捎带确认（piggybacking）**：暂时延缓确认以便将确认信息搭载在下一个出境数据帧上的技术。
 
@@ -1045,6 +1045,75 @@ void receiver3(void) {
 对于滑动窗口协议，有一个基本要求：**数据链路层协议必须按照发送的顺序递交所有的帧**。
 
 #### 一位滑动窗口协议
+
+让我试图用人话来描述一下1-bit滑动窗口协议。
+
+正是因为上面的停-等一次只发一个，确认了再下一个，所以很慢，而且信道利用率很低。1-bit滑动窗口只引入捎带ACK，所以看起来和停-等差不多。
+
+譬如说罢，我和对方通信。此时我和对方不再像停-等一样区分sender和receiver，而是都能收发，是谓双工。对于我来说啊，我的send size是1，就是说一次发一个frame。
+
+那么，在一切正常的情况下：
+
+- 我要么正确发了一个帧，那么我就准备发下一个帧，同时我也准备好了接收对方的ACK。
+- 要么我正确收到了响应的ACK，那么我就停了这一帧的计时器（因为没有超时嘛），准备发下一个。
+
+看起来和停-等很像，唯一区别在于发的帧捎带了ACK，和停-等相比，看起来就好像没有发ACK一样，所以效率更高。
+
+现在我们考虑出错的情况，如果checksum出错，那么我就不管了，等超时重发就好了。如果我收到了一个ACK，但是ACK的序号不对，那么我也不管，等超时重发就好了。总之就是，不是我要的就全让他们timeout就行了。我只在正确响应ACK时才停掉计时器。
+
+来点代码：
+
+```c
+#define MAX_SEQ 1
+typedef enum { frame_arrival,
+               cksum_err,
+               timeout } event_type;
+```
+
+首先这里是不变的，因为1-bit所以`MAX_SEQ`是1（多离谱啊），事件也还是老三样。
+
+然后：
+
+```c
+void protocol4(void) {
+    // 此乃双工协议，一个函数，同时收发
+    seq_nr next_frame_to_send;  // 下一个发送的帧
+    seq_nr frame_expected;      // 下一个期望收到的帧，这俩在这个协议中都是要么0要么1
+    frame r, s;
+    packet buffer;
+    event_type event;
+
+    next_frame_to_send = 0;
+    frame_expected = 0; // 这俩都是初始化
+    from_network_layer(&buffer);    // 从网络层取数据
+    s.info = buffer;    // 准备发第一帧
+    s.seq = next_frame_to_send; // 发送的帧号
+    s.ack = 1 - frame_expected; // 捎带ACK
+    to_physical_layer(&s);  // 发送第一帧
+    start_timer(s.seq); // 开始计时
+    while (true) {
+        wait_for_event(&event);
+        if (event == frame_arrival) {
+            from_physical_layer(&r);
+
+            if (r.seq == frame_expected) {
+                to_network_layer(&r.info);
+                inc(frame_expected);    // 期望收到的帧号自增（虽然实际上是反转但是反正意思到了）
+            }
+            if (r.ack == next_frame_to_send) {
+                stop_timer(r.ack);  // 停止计时
+                from_network_layer(&buffer);
+                inc(next_frame_to_send);
+            }
+            s.info = buffer;
+            s.seq = next_frame_to_send;
+            s.ack = 1 - frame_expected;
+            to_physical_layer(&s);
+            start_timer(s.seq);
+        }
+    }
+}
+```
 
 #### 回退N协议
 
