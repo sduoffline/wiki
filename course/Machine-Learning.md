@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:28:13.001Z
+date: 2024-01-13T20:28:54.674Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -239,5 +239,3 @@ P(+)_{\text{cost}}&=\frac{p\times \text{cost}_{01}}{p\times \text{cost}_{01}+(1-
 \text{cost}_{\text{{norm}}}&=\frac{\text{FNR}\times p\times \text{cost}_{01}+\text{FPR}\times (1-p)\times \text{cost}_{10}}{p\times \text{cost}_{01}+(1-p)\times \text{cost}_{10}}
 \end{aligned}
 $$
-
-其中，$P(+)_{\text{cost}}$表示在成本敏感的情况下，预测为正的样本中，真正为正的样本的比例。$\text{cost}_{\text{{norm}}}$表示在成本敏感的情况下，模型的错误率。
