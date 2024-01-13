@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:27:33.049Z
+date: 2024-01-13T20:28:13.001Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -230,3 +230,14 @@ $$
 $\sum\limits_{x_{i}\in D^{+}}I(f(x_{i})\ne y_{i})\times \text{cost}_{01}$表示对于数据集$D$中属于正类别的样本，如果模型$f$对样本$x_{i}$的预测结果与真实标签$y_{i}$不一致，就将这个错误分类的成本$\text{cost}_{01}$计入总成本中。
 
 $\sum\limits_{x_{i}\in D^{-}}I(f(x_{i})\ne y_{i})\times \text{cost}_{10}$表示对于数据集$D$中属于负类别的样本，如果模型$f$对样本$x_{i}$的预测结果与真实标签$y_{i}$不一致，就将这个错误分类的成本$\text{cost}_{10}$计入总成本中。
+
+这样，有：
+
+$$
+\begin{aligned}
+P(+)_{\text{cost}}&=\frac{p\times \text{cost}_{01}}{p\times \text{cost}_{01}+(1-p)\times \text{cost}_{10}}\\
+\text{cost}_{\text{{norm}}}&=\frac{\text{FNR}\times p\times \text{cost}_{01}+\text{FPR}\times (1-p)\times \text{cost}_{10}}{p\times \text{cost}_{01}+(1-p)\times \text{cost}_{10}}
+\end{aligned}
+$$
+
+其中，$P(+)_{\text{cost}}$表示在成本敏感的情况下，预测为正的样本中，真正为正的样本的比例。$\text{cost}_{\text{{norm}}}$表示在成本敏感的情况下，模型的错误率。
