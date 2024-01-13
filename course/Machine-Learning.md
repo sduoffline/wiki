@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:38:47.059Z
+date: 2024-01-13T20:39:39.030Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -236,19 +236,3 @@ $\sum\limits_{x_{i}\in D^{-}}I(f(x_{i})\ne y_{i})\times \text{cost}_{10}$表示�
 ![A_Strange_Formula_That_Cannot_Be_Rendered](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Strange_Formula_That_Cannot_Be_Rendered.png)
 
 其中，$P(+)_{\text{cost}}$表示在成本敏感的情况下，预测为正的样本中，真正为正的样本的比例。$\text{cost}_{\text{{norm}}}$表示在成本敏感的情况下，模型的错误率。
-
-$\text{FNR}$表示假反例率（False Negative Rate），$\text{FPR}$表示假正例率（False Positive Rate）。所谓的假反例率，就是在所有真正为正的样本中，被错误地预测为负的样本的比例。所谓的假正例率，就是在所有真正为负的样本中，被错误地预测为正的样本的比例；即$\text{FPR}=\frac{\text{FP}}{\text{FP}+\text{TN}}$；而假正例率，就是在所有真正为负的样本中，被错误地预测为正的样本的比例。
-
-显然，$\text{FNR}=1-\text{TPR}$。这就是说，错误分成两组，一组是错误估计成了正例，一组是错误估计成了反例，因此加起来就是全部的错误。
-
-### 比较检验
-
-当我们回到性能比较的问题上来时，我们知道：
-
--   测试性能$\ne$泛化性能
--   测试性能会随着测试集的不同而不同
--   许多的 ML 算法都有一定的随机因子
-
-这就是为什么，在上文中，我们只说“测试性能是泛化性能的近似”。
-
-如果在测试集上观察到学习器A优于学习器B，我们如何保证A的泛化性能在统计意义上优于B?
