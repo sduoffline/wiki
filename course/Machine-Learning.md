@@ -1,8 +1,8 @@
 ---
 title: 机器学习
-description: 
+description: For 数媒。无论从哪方面来说都很抽象（
 published: true
-date: 2024-01-13T20:46:16.648Z
+date: 2024-01-13T20:48:31.543Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
