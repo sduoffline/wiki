@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:25:38.390Z
+date: 2024-01-13T20:26:14.082Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -208,3 +208,13 @@ $$
 $$
 
 $\beta>1$时查全率影响更大，$\beta<1$时查准率影响更大。
+
+#### 开销敏感的错误率
+
+二分类代价矩阵如下：
+
+![Binary_Classification_Cost_Matrix](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Binary_Classification_Cost_Matrix.png)
+
+Cost-Sensitive Error Rate（成本敏感错误率）是一种用于衡量机器学习模型在不同类别上的错误率的指标。比如对于上表，我们在预测正确的情况下显然没有代价，而对于两种预测错误的情况赋予了两个代价权重。
+
+有公式：
