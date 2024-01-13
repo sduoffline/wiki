@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:43:51.475Z
+date: 2024-01-13T20:46:16.648Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -820,19 +820,7 @@ KNN的关键参数是K值，它决定了选择多少个邻居参与估计。较�
 
 Bayes 网络是一个 DAG。举个例子：
 
-```mermaid
-graph TB
-A[属性A]
-C[属性C]
-B[属性B]
-C[属性C]
-D[属性D]
-C[属性C]
-
-C --> A
-C --> B
-C --> D
-```
+![A_DAG_Bayes_Network](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_DAG_Bayes_Network.png)
 
 在这个例子中，有四个节点表示四个属性：A、B、C 和 D。节点 A、B 和 D 都指向节点 C，表示属性 C 依赖于属性 A、B 和 D。
 
