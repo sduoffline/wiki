@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:37:39.486Z
+date: 2024-01-13T20:38:16.394Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -304,88 +304,3 @@ $$
 这里，$\alpha$是显著性水平（significance level），通常取$0.01$或$0.05$活$0.1$。$1-\alpha$是置信度（confidence level）。通过这个公式，我们可以计算出$k$的值，即临界点。
 
 进一步求出该检验的拒绝域，当测试错误率$\hat{\epsilon}\ge k$时，拒绝$H_{0}$，接受$H_{1}$。
-
-#### t 检验
-
-t 检验（t-test）是一种用于检验两组数据平均值差异是否显著的假设检验方法。它是一种单变量分析方法，用于比较两组平均值是否显著不同。t 检验的核心思想是，通过比较组间差异与组内差异来判断两组数据的差异是否显著。
-
-很多时候我们会进行多次重复训练，得到多个错误率。假设有 $k$ 个错误率：$\hat{\epsilon}_{1},\hat{\epsilon}_{2},\cdots,\hat{\epsilon}_{k}$。
-
-有平均测试错误率：
-
-$$
-\mu=\frac{1}{k}\sum\limits_{i=1}^{k}\hat{\epsilon}_{i}
-$$
-
-平均方差：
-
-$$
-\sigma^{2}=\frac{1}{k-1}\sum\limits_{i=1}^{k}(\hat{\epsilon}_{i}-\mu)^{2}
-$$
-
-写出t-分布的公式：
-
-$$
-\tau_{t}=\frac{\mu-\epsilon_{0}}{\sigma/\sqrt{k}}
-$$
-
-其中，$\epsilon_{0}$是假设的泛化错误率，该公式服从自由度为$k-1$的t-分布。
-
-t-分布用于根据小样本来估计呈正态分布且方差未知的总体的均值。t-分布的形状和自由度有关。自由度越大，t-分布越接近正态分布。
-
-**例子**
-
-t-检验是针对分布期望 $\mu$ 的检验。假设一组服从正态分布的测试误差如下：
-
-$$
-\begin{matrix}
-0.10 & 0.12 & 0.14 & 0.11 & 0.13 & 0.12 \\
-\end{matrix}
-$$
-
-正态分布的期望 $\mu=0.11$。要判断这种说法的正确性，我们可以使用 t-检验。
-
-首先，建立零假设 $H_{0}$ 和备择假设 $H_{1}$：
-
-$$
-\begin{aligned}
-H_{0}&:\mu=0.11\\
-H_{1}&:\mu\ne 0.11
-\end{aligned}
-$$
-
-限定显著性水平 $\alpha=0.05$。
-
-计算 T 统计量：
-
-$$
-\begin{aligned}
-T=\frac{\bar{x}-0.11}{s/\sqrt{n}}\\
-\approx 0.288675
-\end{aligned}
-$$
-
-其中，$s$是样本标准差。样本中有 $n=6$ 个样本，所以自由度为 $n-1=5$。通过查表知道，$t_{0.025,5}=2.571$，$t_{0.975,5}=-2.571$。那么，接受假设 $H_{0}$，即认为 $\mu=0.11$ 是正确的。
-
-#### 交叉验证 t 检验
-
-1.  对一组样本 $D$，进行 $k$ 折交叉验证，得到 $k$ 个测试错误率；将两个 learner 都分别在每对数据子集上进行训练和测试，会分别产生两组测试错误率。
-    $$
-    \begin{aligned}
-    \epsilon_{1}^{A},\epsilon_{1}^{A},\cdots,\epsilon_{1}^{A}\\
-    \epsilon_{2}^{B},\epsilon_{2}^{B},\cdots,\epsilon_{2}^{B}
-    \end{aligned}
-    $$
-2.  对每组结果求差值：$\nabla_{i}=\epsilon_{i}^{A}-\epsilon_{i}^{B}$
-    如果两个 learner 的泛化性能相同，那么这些差值应该接近于 0。因此，可以用差值$\nabla_{1},\nabla_{2},\cdots,\nabla_{k}$来对假设“两个 learner 的泛化性能相同”进行 t-检验。
-3.  假设检验：计算出差值样本的均值 $\mu$ 与方差 $\sigma^{2}$，在显著度 $\alpha$ 下，若变量 $\tau_{t}=\left| \frac{\sqrt{k}\mu}{\sigma}\right|$ 大于 t 分布的临界值 $t_{\alpha/2,k-1}$，则拒绝假设，即认为两个 learner 的泛化性能不同，并且选择平均错误率较小的 learner。
-
-#### Bias 和 方差
-
-![Bias_and_Variance_in_Machine_Learning](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Bias_and_Variance_in_Machine_Learning.png)
-
-就这两个值可以描述模型的泛化性能。
-
-然后：
-
-![Relation_Between_Error_Bias_and_Variance](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Relation_Between_Error_Bias_and_Variance.png)
