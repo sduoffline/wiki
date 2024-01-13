@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:32:50.294Z
+date: 2024-01-13T20:34:35.123Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -236,6 +236,6 @@ $\sum\limits_{x_{i}\in D^{-}}I(f(x_{i})\ne y_{i})\times \text{cost}_{10}$表示�
 $$
 \begin{aligned}
 P(+)_{\text{cost}}&=\frac{p\times \text{cost}_{01}}{p\times \text{cost}_{01}+(1-p)\times \text{cost}_{10}}\\
-\text{cost}_{\text{{norm}}}&=\text{FNR}\times p\times \text{cost}_{01}+\text{FPR}\times (1-p)\times \text{cost}_{10}
+\text{cost}_{\text{{norm}}}&=\frac{\text{FNR}\cdot p\cdot \text{cost}_{01}+\text{FPR}\cdot (1-p)\cdot \text{cost}_{10}}{p\times \text{cost}_{01}+(1-p)\times \text{cost}_{10}}
 \end{aligned}
 $$
