@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:25:01.984Z
+date: 2024-01-13T20:25:38.390Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -208,52 +208,3 @@ $$
 $$
 
 $\beta>1$时查全率影响更大，$\beta<1$时查准率影响更大。
-
-#### 开销敏感的错误率
-
-二分类代价矩阵如下：
-
-![Binary_Classification_Cost_Matrix](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Binary_Classification_Cost_Matrix.png)
-
-Cost-Sensitive Error Rate（成本敏感错误率）是一种用于衡量机器学习模型在不同类别上的错误率的指标。比如对于上表，我们在预测正确的情况下显然没有代价，而对于两种预测错误的情况赋予了两个代价权重。
-
-有公式：
-
-$$
-E(f;D;\text{cost})=\frac{1}{m}(\sum\limits_{x_{i}\in D^{+}}I(f(x_{i})\ne y_{i})\times \text{cost}_{01}+\sum\limits_{x_{i}\in D^{-}}I(f(x_{i})\ne y_{i})\times \text{cost}_{10})
-$$
-
-在不平衡分类问题中，对于不同类别的错误分类，我们可能会赋予不同的成本。这个公式中的$\text{cost}_{01}$和$\text{cost}_{10}$就代表了模型在不同类别上的错误分类所带来的成本。
-
-其中，$E(f;D;\text{cost})$表示模型$f$在数据集$D$上，根据成本$\text{cost}$计算出的错误率。$m$表示数据集D中样本的数量。
-
-$\sum\limits_{x_{i}\in D^{+}}I(f(x_{i})\ne y_{i})\times \text{cost}_{01}$表示对于数据集$D$中属于正类别的样本，如果模型$f$对样本$x_{i}$的预测结果与真实标签$y_{i}$不一致，就将这个错误分类的成本$\text{cost}_{01}$计入总成本中。
-
-$\sum\limits_{x_{i}\in D^{-}}I(f(x_{i})\ne y_{i})\times \text{cost}_{10}$表示对于数据集$D$中属于负类别的样本，如果模型$f$对样本$x_{i}$的预测结果与真实标签$y_{i}$不一致，就将这个错误分类的成本$\text{cost}_{10}$计入总成本中。
-
-这样，有：
-
-$$
-\begin{aligned}
-P(+)_{\text{cost}}&=\frac{p\times \text{cost}_{01}}{p\times \text{cost}_{01}+(1-p)\times \text{cost}_{10}}\\
-\text{cost}_{\text{{norm}}}&=\frac{\text{FNR}\times p\times \text{cost}_{01}+\text{FPR}\times (1-p)\times \text{cost}_{10}}{p\times \text{cost}_{01}+(1-p)\times \text{cost}_{10}}
-\end{aligned}
-$$
-
-其中，$P(+)_{\text{cost}}$表示在成本敏感的情况下，预测为正的样本中，真正为正的样本的比例。$\text{cost}_{\text{{norm}}}$表示在成本敏感的情况下，模型的错误率。
-
-$\text{FNR}$表示假反例率（False Negative Rate），$\text{FPR}$表示假正例率（False Positive Rate）。所谓的假反例率，就是在所有真正为正的样本中，被错误地预测为负的样本的比例。所谓的假正例率，就是在所有真正为负的样本中，被错误地预测为正的样本的比例；即$\text{FPR}=\frac{\text{FP}}{\text{FP}+\text{TN}}$；而假正例率，就是在所有真正为负的样本中，被错误地预测为正的样本的比例。
-
-显然，$\text{FNR}=1-\text{TPR}$。这就是说，错误分成两组，一组是错误估计成了正例，一组是错误估计成了反例，因此加起来就是全部的错误。
-
-### 比较检验
-
-当我们回到性能比较的问题上来时，我们知道：
-
--   测试性能$\ne$泛化性能
--   测试性能会随着测试集的不同而不同
--   许多的 ML 算法都有一定的随机因子
-
-这就是为什么，在上文中，我们只说“测试性能是泛化性能的近似”。
-
-如果在测试集上观察到学习器A优于学习器B，我们如何保证A的泛化性能在统计意义上优于B?
