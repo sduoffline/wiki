@@ -2,21 +2,19 @@
 title: 机器学习
 description: 这这这这不对吧……这数学是不是有点太难了（
 published: true
-date: 2024-01-13T20:05:02.031Z
+date: 2024-01-13T20:06:23.609Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T19:57:30.678Z
 ---
 
-# Notes on Machine Learning
-
 >   冬天来了 —— 那是悲喜交加、永远的瞬间。
 
 ## Basic Info
 
--   名词解释：4个$\times$5分
--   简答题：6个$\times$10分
--   综合题（计算）：1个$\times$20分
+-   名词解释：4个 $\times$ 5分
+-   简答题：6个 $\times$ 10分
+-   综合题（计算）：1个 $\times$ 20分
 
 重点大约是：
 
@@ -1809,23 +1807,13 @@ A：我特么……明天再写。先 Mark 一下。
 
 ## KNN
 
-占坑
-
 ## 回归学习
-
-占坑
 
 ## 深度学习
 
-占坑
-
 ## 集成学习
 
-占坑
-
 ## 聚类
-
-占坑
 
 ## 数据预处理
 
