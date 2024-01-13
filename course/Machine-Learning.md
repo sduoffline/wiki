@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:23:34.257Z
+date: 2024-01-13T20:24:13.008Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -245,3 +245,67 @@ $$
 $\text{FNR}$表示假反例率（False Negative Rate），$\text{FPR}$表示假正例率（False Positive Rate）。所谓的假反例率，就是在所有真正为正的样本中，被错误地预测为负的样本的比例。所谓的假正例率，就是在所有真正为负的样本中，被错误地预测为正的样本的比例；即$\text{FPR}=\frac{\text{FP}}{\text{FP}+\text{TN}}$；而假正例率，就是在所有真正为负的样本中，被错误地预测为正的样本的比例。
 
 显然，$\text{FNR}=1-\text{TPR}$。这就是说，错误分成两组，一组是错误估计成了正例，一组是错误估计成了反例，因此加起来就是全部的错误。
+
+### 比较检验
+
+当我们回到性能比较的问题上来时，我们知道：
+
+-   测试性能$\ne$泛化性能
+-   测试性能会随着测试集的不同而不同
+-   许多的 ML 算法都有一定的随机因子
+
+这就是为什么，在上文中，我们只说“测试性能是泛化性能的近似”。
+
+如果在测试集上观察到学习器A优于学习器B，我们如何保证A的泛化性能在统计意义上优于B?
+
+#### 假设检验
+
+假设检验（hypothesis testing）是统计学中的一个重要过程。假设检验评估关于总体的两个互斥的陈述，以确定样本数据最能支持哪个陈述。
+
+所谓的假设（hypothesis），就是对 learner 泛化错误率分布的一些判断/猜测。
+
+说人话就是：
+
+首先我们取$\hat{\epsilon}$为学习器在测试集上的错误率,也就是说，如果有$m$个测试样本，那么就有$\hat{\epsilon}\cdot m$个样本被错误分类了。
+
+然后，我们假定学习器的泛化错误率为$\epsilon$，那么这个学习器将$m^{\prime}$个样本错误分类，而将剩下的$m-m^{\prime}$个样本正确分类的概率就是：
+
+$$
+\epsilon^{m^{\prime}}(1-\epsilon)^{m-m^{\prime}}
+$$
+
+那么，在包含了$m$个测试样本的测试集上，泛化错误率为$\epsilon$的学习器被测得泛化错误率为$\hat{\epsilon}$的概率为：
+
+$$
+P(\hat{\epsilon};\epsilon)=\binom{m}{\hat{\epsilon}\cdot m}\epsilon^{\hat{\epsilon}\cdot m}(1-\epsilon)^{m-\hat{\epsilon}\cdot m}
+$$
+
+In case 你忘记了二项分布的写法，这里给出：
+
+$$
+\begin{aligned}
+\binom{n}{k}&=\frac{n!}{k!(n-k)!}\\
+&=C_{n}^{k}
+\end{aligned}
+$$
+
+于是，使用二项检验（binomial test）的方法，假设：
+
+$$
+H_{0}:\epsilon\le\epsilon_{0}\\
+H_{1}:\epsilon>\epsilon_{0}
+$$
+
+因此我们需要讨论单边检验的拒绝域形式。当$H_{1}$成立时，即$\epsilon>\epsilon_{0}$时，测试错误率往往偏大，拒绝域形式为$\hat{\epsilon}\ge k$，其中$k$是一个正整数。
+
+$$
+\begin{aligned}
+P_{\epsilon\in H_{0}}(\hat{\epsilon}\ge k)&=\sum\limits_{i=\lceil mk\rceil}^{m}\binom{m}{i}\epsilon^{i}(1-\epsilon)^{m-i}\\
+&\le\sum\limits_{i=\lceil mk\rceil}^{m}\binom{m}{i}\epsilon_{0}^{i}(1-\epsilon_{0})^{m-i}\\
+&=\alpha
+\end{aligned}
+$$
+
+这里，$\alpha$是显著性水平（significance level），通常取$0.01$或$0.05$活$0.1$。$1-\alpha$是置信度（confidence level）。通过这个公式，我们可以计算出$k$的值，即临界点。
+
+进一步求出该检验的拒绝域，当测试错误率$\hat{\epsilon}\ge k$时，拒绝$H_{0}$，接受$H_{1}$。
