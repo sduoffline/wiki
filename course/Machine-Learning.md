@@ -2,11 +2,13 @@
 title: 机器学习
 description: 这这这这不对吧……这数学是不是有点太难了（
 published: true
-date: 2024-01-13T19:57:30.679Z
+date: 2024-01-13T20:01:50.854Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T19:57:30.678Z
 ---
+
+# Notes on Machine Learning
 
 >   冬天来了 —— 那是悲喜交加、永远的瞬间。
 
