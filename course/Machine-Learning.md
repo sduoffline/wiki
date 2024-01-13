@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:26:14.082Z
+date: 2024-01-13T20:26:51.145Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -218,3 +218,7 @@ $\beta>1$时查全率影响更大，$\beta<1$时查准率影响更大。
 Cost-Sensitive Error Rate（成本敏感错误率）是一种用于衡量机器学习模型在不同类别上的错误率的指标。比如对于上表，我们在预测正确的情况下显然没有代价，而对于两种预测错误的情况赋予了两个代价权重。
 
 有公式：
+
+$$
+E(f;D;\text{cost})=\frac{1}{m}(\sum\limits_{x_{i}\in D^{+}}I(f(x_{i})\ne y_{i})\times \text{cost}_{01}+\sum\limits_{x_{i}\in D^{-}}I(f(x_{i})\ne y_{i})\times \text{cost}_{10})
+$$
