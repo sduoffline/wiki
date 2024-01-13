@@ -2,7 +2,7 @@
 title: 机器学习
 description: 
 published: true
-date: 2024-01-13T20:39:39.030Z
+date: 2024-01-13T20:40:11.663Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -235,4 +235,4 @@ $\sum\limits_{x_{i}\in D^{-}}I(f(x_{i})\ne y_{i})\times \text{cost}_{10}$表示�
 
 ![A_Strange_Formula_That_Cannot_Be_Rendered](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Strange_Formula_That_Cannot_Be_Rendered.png)
 
-其中，$P(+)_{\text{cost}}$表示在成本敏感的情况下，预测为正的样本中，真正为正的样本的比例。$\text{cost}_{\text{{norm}}}$表示在成本敏感的情况下，模型的错误率。
+其中，$P_{\text{cost}}$表示在成本敏感的情况下，预测为正的样本中，真正为正的样本的比例。$\text{cost}_{\text{{norm}}}$表示在成本敏感的情况下，模型的错误率。
