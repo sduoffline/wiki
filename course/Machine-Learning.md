@@ -2,7 +2,7 @@
 title: 机器学习
 description: For 数媒。无论从哪方面来说都很抽象（
 published: true
-date: 2024-01-14T09:46:01.473Z
+date: 2024-01-14T10:51:20.728Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -508,7 +508,7 @@ $$
 
 对于先验概率，如果特征是连续的，那么可以使用高斯分布来估计；如果特征是离散的，那么可以使用多项式分布来估计。
 
-直接距离，来点人话：
+直接举例，来点人话：
 
 | 编号 | 色泽 | 根蒂 | 敲声 | 纹理 | 脐部 | 触感 | 密度  | 含糖率 | 好瓜 |
 | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :---: | :----: | :--: |
@@ -2032,6 +2032,221 @@ $$
 $$
 
 其中，$\mathbf{w}=(w_{1}, w_{2}, \ldots, w_{n})^{T}$ 是权重向量，$b$ 是偏置项。
+
+一定要牢记，在给定数据集的情况下，我们任务就是求出最优的 $\mathbf{w}$ 和 $b$，使得预测值 $f(\mathbf{x})$ 尽可能接近真实值 $y$。
+
+### 最小二乘法
+
+在回归任务中，经常使用最小二乘法（Least Square Method）。
+
+定义误差：
+
+$$
+\text{err}=\sum\limits_{i=1}^{m}(y_{i}-f(\mathbf{x}_{i}))^{2}
+$$
+
+这其中，$m$ 是数据集的大小，$y_{i}$ 是第 $i$ 个样本的真实值，$f(\mathbf{x}_{i})$ 是第 $i$ 个样本的预测值。
+
+那么，最小二乘法的目标就是：
+
+$$
+\min\limits_{\mathbf{w},b}\text{err}=\sum\limits_{i=1}^{m}(y_{i}-f(\mathbf{x}_{i}))^{2}
+$$
+
+注意，我们的 model 为：
+
+$$
+f(\mathbf{x})=\mathbf{w}^{T}\mathbf{x}+b
+$$
+
+Loss function 为：
+
+$$
+\text{Loss}=\sum\limits_{i=1}^{m}(y_{i}-f(\mathbf{x}_{i}))^{2}
+$$
+
+如何解出最优的 $\mathbf{w}$ 和 $b$，使得 Loss 最小呢？
+
+我们可以对 $\mathbf{w}$ 和 $b$ 分别求偏导，然后令其为 $0$，从而得到最优解。
+
+$$
+\begin{aligned}
+\frac{\partial\text{Loss}}{\partial\mathbf{w}}&=2(w\sum\limits_{i=1}^{m}x_{i}^{2}-\sum\limits_{i=1}^{m}(y_{i}-b)x_{i})=0\\
+\frac{\partial\text{Loss}}{\partial b}&=\sum\limits_{i=1}^{m}2(y_{i}-f(\mathbf{x}_{i}))(-1)=0
+\end{aligned}
+$$
+
+解得：
+
+$$
+\begin{aligned}
+\mathbf{w}&=\frac{\sum\limits_{i=1}^{m}y_{i}(x_{i}-\bar{x})}{\sum\limits_{i=1}^{m}x_{i}^{2}-\frac{1}{m}(\sum\limits_{i=1}^{m}x_{i})^{2}}\\
+b&=\frac{1}{m}\sum\limits_{i=1}^{m}(y_{i}-\mathbf{w}^{T}\mathbf{x}_{i})
+\end{aligned}
+$$
+
+其中，$\bar{x}=\frac{1}{m}\sum\limits_{i=1}^{m}x_{i}$。
+
+对于多元回归，我们可以将 $\mathbf{x}$ 看作是一个向量，$\mathbf{w}$ 也是一个向量，那么就有：
+
+模型：
+
+$$
+f(\mathbf{x})=\mathbf{X}\hat{\mathbf{w}}
+$$
+
+其中，$\mathbf{X}$ 是一个 $m\times n$ 的矩阵。
+
+Loss function：
+
+$$
+\text{Loss}=(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})^{T}(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})
+$$
+
+其中，$\hat{\mathbf{w}}=(\mathbf{w}, b)^{T}$；
+
+$$
+\mathbf{X}=\begin{bmatrix}
+x_{11}&x_{12}&\cdots&x_{1n}&1\\
+x_{21}&x_{22}&\cdots&x_{2n}&1\\
+\vdots&\vdots&\ddots&\vdots&\vdots\\
+x_{m1}&x_{m2}&\cdots&x_{mn}&1
+\end{bmatrix}
+=\begin{bmatrix}
+\mathbf{x}_{1}^{T}&1\\
+\mathbf{x}_{2}^{T}&1\\
+\vdots&\vdots\\
+\mathbf{x}_{m}^{T}&1
+\end{bmatrix}
+$$
+
+而 $\mathbf{y}$ 是一个 $m\times 1$ 的向量。
+
+对 $\hat{\mathbf{w}}$ 求偏导，令其为 $0$，解得：
+
+$$
+\hat{\mathbf{w}}=(\mathbf{X}^{T}\mathbf{X})^{-1}\mathbf{X}^{T}\mathbf{y}
+$$
+
+Tips：向量求导公式
+
+$$
+\begin{aligned}
+\frac{\partial\mathbf{X}\theta}{\partial\theta}&=\mathbf{X}^{T}\\
+\frac{\partial\theta^{T}\mathbf{X}}{\partial\theta}&=\mathbf{X}\\
+\frac{\partial\theta^{T}\mathbf{X}\theta}{\partial\theta}&=\mathbf{X}\theta+\mathbf{X}^{T}\theta=\theta(\mathbf{X}+\mathbf{X}^{T})\\
+\end{aligned}
+$$
+
+不过，最小二乘法的损失函数有可能会造成模型**过拟合**。
+
+**缺点**：
+
+回顾解析解：
+
+$$
+\hat{\mathbf{w}}^{\ast}=(\mathbf{X}^{T}\mathbf{X})^{-1}\mathbf{X}^{T}\mathbf{y}
+$$
+
+解析解中的 $(\mathbf{X}^{T}\mathbf{X})^{-1}$ 有可能不是满秩的，这时就无法求逆了，即 $(\mathbf{X}^{T}\mathbf{X})^{-1}$ 不存在。这就是说，样本的特征数大于样本的个数，这样，$\hat{\mathbf{w}}$ 就会有多个解。
+
+所以说，想要应用最小二乘法，要求已有样本中的值比较准确，且样本的特征数小于样本的个数。
+
+### Ridge 回归与 Lasso 回归
+
+先说，岭回归（Ridge Regression）和下面要说的 Lasso 回归（Lasso Regression）都是为了解决最小二乘法的缺点而提出的，它们都属于线性回归。
+
+Model:
+
+$$
+f(\mathbf{x})=\mathbf{w}^{T}\mathbf{x}+b
+$$
+
+Loss function:
+
+$$
+\begin{aligned}
+\text{朴素线性回归}\quad&\text{Loss}=(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})^{T}(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})\\
+\text{Ridge 回归}\quad&\text{Loss}=(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})^{T}(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})+\lambda||\mathbf{w}||_{2}^{2}\,(\lambda\gt 0)\\
+\text{Lasso 回归}\quad&\text{Loss}=(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})^{T}(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})+\lambda||\mathbf{w}||_{1}\,(\lambda\gt 0)
+\end{aligned}
+$$
+
+其中：
+
+- $\mathbf{y}$ 是目标变量（或因变量）的向量，包含了观测到的实际值。
+- $\mathbf{X}$ 是自变量（或特征）的矩阵，包含了观测到的特征值。
+- $\hat{\mathbf{w}}$ 是模型的参数向量，用于拟合自变量和目标变量之间的关系。
+- $\lambda$ 是正则化参数，用于控制正则化项的强度。
+
+现在我们来逐个解释这些公式：
+
+1. 朴素线性回归（Ordinary Least Squares, OLS）：
+   朴素线性回归使用最小二乘法来拟合数据。损失函数是目标变量与预测变量之间的差异的平方和。公式中的 $(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})^{T}(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})$ 表示目标变量与预测变量之间的残差平方和。
+
+2. Ridge 回归：
+   Ridge 回归是一种带有L2正则化的线性回归方法。它在最小二乘损失函数的基础上添加了正则化项，以限制参数的大小。正则化项 $||\mathbf{w}||_{2}^{2}$ 是参数向量的L2范数的平方。通过引入正则化项，Ridge 回归可以减小参数的方差，从而降低过拟合的风险。正则化参数 $\lambda$ 控制正则化项的强度，较大的 $\lambda$ 值会增加正则化的影响。
+
+3. Lasso 回归：
+   Lasso 回归是一种带有L1正则化的线性回归方法。与Ridge回归类似，Lasso回归也在最小二乘损失函数的基础上添加了正则化项。不同之处在于，Lasso回归使用参数向量的L1范数作为正则化项，即 $||\mathbf{w}||_{1}$。L1正则化倾向于产生稀疏解，即将某些参数置为零，从而实现特征选择的效果。正则化参数 $\lambda$ 控制正则化项的强度，较大的 $\lambda$ 值会增加正则化的影响。
+
+Ridge 回归和 Lasso 回归可以防止模型过拟合，也可以解决样本的特征数远超过样本数的问题。
+
+对 Ridge 回归的 Loss function 求偏导，令其为 $0$。
+
+$$
+\begin{aligned}
+E_{\hat{\mathbf{w}}}&=(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})^{T}(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})+\lambda||\mathbf{w}||_{2}^{2}\\
+&=(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})^{T}(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})+\lambda\hat{\mathbf{w}}^{T}\hat{\mathbf{w}}\\
+&=(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})^{T}(\mathbf{y}-\mathbf{X}\hat{\mathbf{w}})+\lambda\hat{\mathbf{w}}^{T}\mathbf{I}\hat{\mathbf{w}}\\
+\end{aligned}
+$$
+
+解得：
+
+$$
+\hat{\mathbf{w}}=(\mathbf{X}^{T}\mathbf{X}+\lambda\mathbf{I})^{-1}\mathbf{X}^{T}\mathbf{y}
+$$
+
+这是解析解。其中，$(\mathbf{X}^{T}\mathbf{X}+\lambda\mathbf{I})^{-1}$ 一定是满秩的。
+
+------
+
+对于 Lasso 回归，首先说：
+
+$$
+||\mathbf{w}||_{1}=\sum\limits_{i=1}^{n}|w_{i}|
+$$
+
+对 Lasso 回归的 Loss function 求偏导，令其为 $0$。
+
+它在某点可导的条件是：
+
+1.  函数在该点连续
+2.  函数在该点存在左导数和右导数，且相等
+
+考虑到 $||\mathbf{w}||_{1}$ 没有导数，所以使用近端梯度下降法（Proximal Gradient Descent Method），来最小化 Lasso 回归的 Loss function。
+
+解析解：
+
+$$
+w^{i}_{k+1}=\begin{cases}
+z^{i}-\lambda/L&\text{,}\,z^{i}\gt\lambda/L\\
+0&\text{,}\,|z^{i}|\le\lambda/L\\
+z^{i}+\lambda/L&\text{,}\,z^{i}\lt-\lambda/L
+\end{cases}\\
+\mathbf{z}=\mathbf{w}_{k}-1/L\nabla f(\mathbf{w}^{k})
+$$
+
+其中，$L$ 是 Lipschitz 常数，$f(\mathbf{w})$ 是 Loss function。所谓 Lipschitz 常数，总之就是一个大于零的常数。
+
+Lasso 回归可以解决特征数大于样本数的问题。
+
+然而，Lasso 回归容易产生稀疏解（Sparse Solution）。稀疏解指的是模型参数向量中的某些元素被压缩为零，从而实现特征选择（Feature Selection）的效果。
+
+Lasso回归的L1正则化项 $||\mathbf{w}||_{1}$ 是参数向量 $\mathbf{w}$ 的L1范数，定义为参数向量中各个元素绝对值的和。L1正则化项的特点是在优化过程中促使某些参数变为零。这是因为L1正则化项在参数空间中的等值线是由菱形构成的，而不是圆形（L2正则化项的等值线是圆形）。因此，当优化算法在最小化损失函数的同时，受到L1正则化项的影响，它会倾向于将某些参数压缩为零，从而实现特征选择。
+
+通过产生稀疏解，Lasso回归可以帮助我们识别和选择对目标变量具有显著影响的特征。这对于处理高维数据和特征选择非常有用。通过将某些特征的系数置为零，Lasso回归可以简化模型，减少过拟合的风险，并提高模型的解释性。
 
 ## 深度学习
 
