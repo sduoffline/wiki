@@ -2,7 +2,7 @@
 title: 机器学习
 description: For 数媒。无论从哪方面来说都很抽象（
 published: true
-date: 2024-01-14T10:51:20.728Z
+date: 2024-01-14T11:42:46.788Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -2249,6 +2249,131 @@ Lasso回归的L1正则化项 $||\mathbf{w}||_{1}$ 是参数向量 $\mathbf{w}$ �
 通过产生稀疏解，Lasso回归可以帮助我们识别和选择对目标变量具有显著影响的特征。这对于处理高维数据和特征选择非常有用。通过将某些特征的系数置为零，Lasso回归可以简化模型，减少过拟合的风险，并提高模型的解释性。
 
 ## 深度学习
+
+反正生物上的神经元就是一个计算单元，通过输入线获取大量输入并进行一些计算，然后通过轴突将输出输出到其他节点或大脑中的其他神经元。
+
+M-P 神经元模型就是这样的一个模型，它接收 $n$ 个输入信号 $x_{1}, x_{2}, \ldots, x_{n}$，每个输入信号 $x_{i}$ 通过带权重 $w_{i}$ 的连接线传递给神经元，神经元将所有输入信号的加权和 $z=\sum_{i=1}^{n}w_{i}x_{i}$ 作为输入，通过激活函数 $f$ 计算输出 $y=f(z)$。
+
+### 激活函数
+
+激活函数（Activation Function）是神经网络中的一个重要组成部分，它决定了神经元的输出是否被激活。激活函数的输入是神经元的加权和 $z$，输出是神经元的输出 $y$。
+
+激活函数的作用是引入非线性因素，使得神经网络可以拟合非线性函数。如果没有激活函数，神经网络的输出将是输入的线性组合，无法拟合非线性函数。
+
+激活函数的种类有很多，常见的有 Sigmoid 函数、Tanh 函数、ReLU 函数等。
+
+![An_Example_of_Activation_Function](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/An_Example_of_Activation_Function.png)
+
+不过，sigmoid 函数和 tanh 函数在深度学习中已经不常用了，因为它们的梯度在接近饱和区域时会变得非常小，从而导致梯度消失的问题。而且，sigmoid 输出不是以零为中心的。
+
+$$
+\begin{aligned}
+\tanh(x)&=2\textrm{sigmoid}(2x)-1\\
+\textrm{sigmoid}(x)&=\frac{1}{1+e^{-x}}
+\end{aligned}
+$$
+
+人们发现，与 sigmoid/tanh 函数相比，它极大地加速了随机梯度下降的收敛（例如 Krizhevsky 等人的 6 倍）。有人认为这是由于其线性、非饱和形式造成的。
+
+与涉及昂贵运算（指数等）的 tanh/sigmoid 神经元相比，ReLU 可以通过简单地将激活矩阵阈值设置为零来实现。
+
+### 感知器
+
+感知器（Perceptron）是一种简单的神经网络模型，它是由两层神经元组成的单层前馈神经网络。感知器的输入层接收输入信号，输出层产生输出信号。感知器的输出信号是由输入信号加权和经过激活函数计算得到的。
+
+![An_Example_of_Perceptron](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/An_Example_of_Perceptron.png)
+
+这是一种线性分类器。如果训练集是线性可分的，那么感知器就保证收敛。
+
+Perceptron 的缺陷：单层 Perceptron 只能学习线性可分离模式。
+
+### 多层感知器
+
+多层感知器（Multilayer Perceptron, MLP）是一种前馈神经网络，它由多个感知器组成，可以用于解决非线性分类问题。
+
+![An_Example_of_Multilayer_Perceptron](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/An_Example_of_Multilayer_Perceptron.png)
+
+在全连接层中，每个神经元都连接到前一层中的每个神经元，并且每个连接都有自己的权重。
+
+所谓前馈（Feedforward），就是指神经网络的信息流只能从输入层流向输出层，而不能从输出层流向输入层。在此网络中，信息仅沿一个方向移动，即向前移动，从输入节点经过隐藏节点（如果有）并到达输出节点。网络中不存在循环或环路。
+
+MLP 的缺点：就内存（权重）和计算（连接）而言非常昂贵
+
+### 反向传播
+
+反向传播，即 Back Propagation。
+
+1986年，提出了多层感知器（MLP）的BP算法（反向传播算法），利用 Sigmoid 激活函数进行非线性映射，有效解决了非线性分类和学习的问题。
+
+看下 Sigmoid 函数。
+
+![Sigmoid_Function_and_Its_Image](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Sigmoid_Function_and_Its_Image.png)
+
+>   不想学了……TAT
+>
+>   先 Mark 一下吧。
+
+### Learning and Training
+
+神经网络的学习过程是根据训练数据来调整神经元的连接权值以及每个功能神经元的阈值。
+
+-   在训练神经网络时，一个 epoch 意味着完整训练集的一次传递。通常它可能包含一些迭代。
+-   通常我们将训练集分成 batches，每个 epoch 都会遍历整个训练集。每次 iteration 都会跑个 batch。
+-   每一个 epoch 后，我们都会在 validation set 上测试一下模型的性能。
+-   随机梯度下降（Stochastic Gradient Descent，SGD）意味着，基本上，我们使用 1 个样本的损失来更新每次迭代的参数。
+-   批量梯度下降（Batch Gradient Descent，BGD）意味着，我们在每次迭代时使用训练集中所有示例的损失平均值。
+-   小批量梯度下降（Mini-Batch Gradient Descent，MBGD）意味着，我们在每次迭代时使用训练集中的 $n$ 个样本（而不是 SGD 中的 $1$ 个样本）。
+
+### 梯度下降
+
+总之是在更新参数。正是为了让 Loss function 最小化，所以要更新参数。
+
+$$
+f(\theta_{0}, \theta_{1})\xrightharpoonup{\nabla}(\frac{\partial f}{\partial\theta_{0}}, \frac{\partial f}{\partial\theta_{1}})^{T}
+$$
+
+梯度 $\nabla f$ 的方向是函数 $f$ 在当前点的最大方向导数的方向，而梯度的模是方向导数的最大值。
+
+$$
+\textbf{minimize}f(\theta_{0}, \theta_{1})\\
+\vec{\theta}\leftarrow\vec{\theta}-\eta\nabla f(\vec{\theta})
+$$
+
+梯度下降是一种一阶迭代优化算法，用于寻找函数的最小值。
+
+### Softmax
+
+Softmax 函数是一种归一化指数函数，它将 $n$ 维实数向量 $\mathbf{z}$ 映射到 $n$ 维实数向量 $\sigma(\mathbf{z})$，其中每个元素的范围是 $(0, 1)$，并且所有元素的和为 $1$。
+
+$$
+\sigma(\mathbf{z})_{i}=\frac{e^{z_{i}}}{\sum_{j=1}^{n}e^{z_{j}}}
+$$
+
+Softmax 函数常用于多分类问题的输出层，用于将神经网络的输出转换为概率分布。
+
+### CNN
+
+卷积神经网络（Convolutional Neural Network，CNN）是一种前馈神经网络，它的人工神经元可以响应一部分覆盖范围内的周围单元，对于大型图像处理有出色表现。
+
+主要有三个关键概念：
+
+1.  Receptive Field（感受野）：神经元对输入数据的局部区域。
+2.  Parameter Sharing（权值共享）：在一个特征图中，所有神经元都使用相同的权重和偏置。
+3.  Pooling（池化）：通过减少特征图的尺寸来减少参数数量。
+
+对于 Receptive Field，每个隐层节点只连接到图像某个局部的像素区域，从而大大减少需要训练的权值参数。（和 MLP 不同）
+
+而对于 Parameter Sharing，每个隐层节点都使用相同的权值和偏置，这样可以大大减少需要训练的权值参数。
+
+对于 Pooling，它可以减少特征图的尺寸，从而减少参数数量。虽然尺寸减少，但是主要特征仍然保留。Pooling 本质上是一种 subsampling。
+
+CNN 的主要结构是：
+
+![The_Overall_Structure_of_CNN](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Overall_Structure_of_CNN.png)
+
+### 卷积层
+
+![Some_Explanation_of_Convolution](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Some_Explanation_of_Convolution.png)
 
 ## 集成学习
 
