@@ -2,7 +2,7 @@
 title: 机器学习
 description: For 数媒。无论从哪方面来说都很抽象（
 published: true
-date: 2024-01-13T20:48:31.543Z
+date: 2024-01-14T09:46:01.473Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -1752,7 +1752,286 @@ A：我特么……明天再写。先 Mark 一下。
 
 ## KNN
 
+KNN 根据数据集与邻居的相似性对数据集进行分类。
+
+KNN 算法的基本思想是：如果一个样本在特征空间中的 $k$ 个最相似（即特征空间中最邻近）的样本中的大多数属于某一个类别，则该样本也属于这个类别。
+
+与其他监督学习算法不同，KNN 不会从训练数据中学习显式映射 $f$，而是直接利用训练数据进行预测。
+
+给定训练数据集 $D=\{(\mathbf{x}_1, y_1), (\mathbf{x}_2, y_2), \ldots, (\mathbf{x}_m, y_m)\}$，其中 $\mathbf{x}_i \in \mathcal{X} \subseteq \mathbb{R}^n$，$y_i \in \mathcal{Y} = \{c_1, c_2, \ldots, c_k\}$，$i=1,2,\ldots,m$，$k$ 是类别的个数。对于新的样本 $\mathbf{x}$，KNN 的目标是找到与 $\mathbf{x}$ 最近的 $k$ 个样本，然后根据这 $k$ 个样本的类别来预测 $y$ 的值。
+
+对于 classification 任务，KNN 的输出形式是一个离散变量，表示样本的类别。对于 regression 任务，KNN 的输出形式是一个连续变量，表示样本的数值。
+
+KNN 需要：参数 $K$，以及距离度量方法（其实就是 Distance Function）。
+
+### 距离度量
+
+KNN 算法中**最常用**的距离度量方法是欧氏距离（Euclidean Distance），它是样本特征向量的欧氏距离。
+
+即，对于 $\mathbf{p}=(p_1, p_2, \ldots, p_n)$ 和 $\mathbf{q}=(q_1, q_2, \ldots, q_n)$，它们之间的欧氏距离为：
+
+$$
+d(\mathbf{p}, \mathbf{q}) = \sqrt{\sum_{i=1}^{n} (p_i - q_i)^2}
+$$
+
+除了欧氏距离，KNN 还可以使用其他距离度量方法，比如 Manhattan 距离。
+
+>   其实就是数格子
+
+$$
+d(\mathbf{p}, \mathbf{q}) = ||\mathbf{p}-\mathbf{q}|| = \sum_{i=1}^{n} |p_i - q_i|
+$$
+
+------
+
+Minkowski 距离是欧氏距离和 Manhattan 距离的一般化。
+
+$$
+d(\mathbf{p}, \mathbf{q}) = \sqrt[m]{\sum_{i=1}^{n} |p_i - q_i|^m}
+$$
+
+这个公式是 $m$ 阶 Minkowski 距离的计算式。当 $m=1$ 时，Minkowski 距离等价于 Manhattan 距离；当 $m=2$ 时，Minkowski 距离等价于欧氏距离。
+
+当 $m\to\infty$ 时，Minkowski 距离等价于 Chebyshev 距离。
+
+>   虽然没提 Chebyshev 距离，但是简单说说。Chebyshev 距离是一种用于衡量两个点之间的距离的度量方式。它基于点之间在各个坐标轴上的最大差异。
+>
+>   给定两个点 $P=(x_1, y_1)$ 和 $Q=(x_2, y_2)$，它们在二维平面上的Chebyshev距离可以表示为：
+>
+>   $$
+>   D_{\text{Chebyshev}}(P, Q) = \max(|x_2 - x_1|, |y_2 - y_1|)
+>   $$
+>
+>   可以将Chebyshev距离推广到更高维度的情况。对于点 $P=(x_1, y_1, z_1)$ 和 $Q=(x_2, y_2, z_2)$ 在三维空间中的情况，Chebyshev距离可以表示为：
+>
+>   $$
+>   D_{\text{Chebyshev}}(P, Q) = \max(|x_2 - x_1|, |y_2 - y_1|, |z_2 - z_1|)
+>   $$
+>
+>   在一般情况下，对于点 $P=(x_1, x_2, \ldots, x_n)$ 和 $Q=(y_1, y_2, \ldots, y_n)$ 在$n$维空间中的情况，Chebyshev距离可以表示为：
+>
+>   $$
+>   D_{\text{Chebyshev}}(P, Q) = \max(|x_1 - y_1|, |x_2 - y_2|, \ldots, |x_n - y_n|)
+>   $$
+
+**余弦相似度**
+
+余弦相似度是内积空间的两个非零向量之间相似度的度量，用于测量它们之间角度的余弦。
+
+$$
+\text{Similarity} = \cos(\theta) = \frac{\mathbf{A}\cdot\mathbf{B}}{||\mathbf{A}||\cdot||\mathbf{B}||} = \frac{\sum_{i=1}^{n} A_iB_i}{\sqrt{\sum_{i=1}^{n} A_i^2}\sqrt{\sum_{i=1}^{n} B_i^2}}
+$$
+
+------
+
+**Hamming 距离**
+
+Hamming 距离度量了两个 features 之间的差异。直接看例子就懂了：
+
+```markdown
+1011101
+1001001
+```
+
+可见差异为 $2$，所以 Hamming 距离为 $2$。
+
+```markdown
+2173896
+2233796
+```
+
+可见差异为 $3$，所以 Hamming 距离为 $3$。
+
+换而言之，Hamming 距离等价于将一个 feature 变换成另一个 feature 所需要替换的字符个数。
+
+### 归一化
+
+对于 KNN 而言，features 之间必须要进行归一化。
+
+一种方法是：将 $p_{i}$ 用 $z_{im}=\frac{x_{im}-\bar{x}_{m}}{\sigma_{m}}$ 替换，其中 $\bar{x}_{m}$ 是第 $m$ 个 feature 的均值，$\sigma_{m}$ 是第 $m$ 个 feature 的标准差。
+
+$$
+\bar{x}_{m}=\frac{1}{n}\sum\limits_{i=1}^{n}x_{im}\\
+\sigma_{m}=\sqrt{\frac{1}{n}\sum\limits_{i=1}^{n}(x_{im}-\bar{x}_{m})^{2}}
+$$
+
+我们使得每个 feature 的均值为 $0$，标准差为 $1$。
+
+### 带权
+
+由于 feature 间并不同等重要，因此我们可以对 feature 进行加权缩放。
+
+$$
+d(\mathbf{p}, \mathbf{q}) = \sqrt{\sum_{i=1}^{n} w_i(p_i - q_i)^2}
+$$
+
+其中，$w_i$ 是第 $i$ 个 feature 的权重。这个权重可以作为先验知识直接给出，也可以通过交叉验证（cross-validation）学习得到（后者幻灯片明说了 not covered，那就不管）。
+
+### K 的选择
+
+理论上，如果可用样本数量无限，$K$ 越大，分类效果越好，因为用上了更多的信息。然而在实践中，这肯定是不可能的，且不说计算量，就算是计算量可以接受，数据集也不可能无限大。
+
+当 $K=1$ 时，KNN 可以看作是一个最近邻分类器（Nearest Neighbor Classifier）。这时，KNN 的分类结果对噪声非常敏感，因为它只考虑了一个最近邻。
+
+1NN 有时候可以用于可视化（Visualization）。譬如Voronoi Diagram（维诺图）。Voronoi 图将空间分为一个一个的区域，每个区域内的点都离它的最近邻最近。
+
+------
+
+较小的 $K$：
+
+-   为每个类别创建许多小区域
+-   噪声敏感
+-   决策边界可能不够平滑
+-   可能造成过拟合
+
+较大的 $K$：
+
+-   为每个类别创建较少的大区域
+-   通常可以得到更平滑的决策边界
+-   可以减少 class 间的 label 噪声
+-   可能造成欠拟合（这就是由太过平滑的决策边界造成的）
+
+一般来说，$K$ 是奇数，这样可以避免平票的情况。
+
+### 留出法
+
+留出法（Hold-Out）是最简单的交叉验证方法。它将数据集 $D$ 划分为两个互斥的集合，一个作为训练集 $S$，一个作为测试集 $T$。在 $S$ 上训练出模型后，用 $T$ 来评估其测试误差，作为对泛化误差的估计。
+
+比如说，我将数据集分为 $80\%$ 的训练集和 $20\%$ 的测试集。然后我用训练集训练模型，用测试集测试模型。
+
+可以使用 Hold-Out 方法来选择最优的 $K$。一旦模型确定，我们就可以在测试集上评估模型的泛化误差。
+
+Hold-Out 方法的缺点是：只使用了一部分数据来训练模型，这样会造成模型的训练效果不够好。而且，可能会造成数据的分布变化，因此为了保证数据分布的一致性，还是分层采样比较好。
+
+### K-Fold 交叉验证
+
+K-Fold 交叉验证是将数据集 $D$ 划分为 $k$ 个大小相似的互斥子集，每个子集都尽可能保持数据分布的一致性。然后，每次用 $k-1$ 个子集的并集作为训练集，余下的那个子集作为测试集，这样就可以获得 $k$ 组训练/测试集，从而可以进行 $k$ 次训练和测试，最终返回的是 $k$ 个测试结果的均值。
+
+![K-Fold_Cross_Validation](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/K-Fold_Cross_Validation.png)
+
+### 留一法
+
+留一法（Leave-One-Out）是 K-Fold 交叉验证的特殊情况，即 $k=n$。这时，每个子集都只包含一个样本，这样就得到了 $n$ 组训练/测试集，从而可以进行 $n$ 次训练和测试，最终返回的是 $n$ 个测试结果的均值。
+
+$$
+\begin{aligned}
+&\text{For k=}1,2,\cdots,K\\
+&\quad\quad\text{err}(k)=0\\
+&\quad\quad\text{For i=}1,2,\cdots,n\\
+&\quad\quad\quad\quad\text{用剩余数据对}\mathbf{x}_{i}\text{预测标签}\hat{y}_{i}\\
+&\quad\quad\quad\quad\text{err}(k)=\text{err}(k)+I(\hat{y}_{i}\ne y_{i})\\
+\end{aligned}
+$$
+
+输出：
+
+$$
+k^{\ast}=\arg\min\limits_{1\le k\le K}\text{err}(k)
+$$
+
+### 维度灾难
+
+维度灾难（Curse of Dimensionality）是指在高维空间中，数据变得非常稀疏，这会导致距离度量失效，从而影响 KNN 的分类效果。
+
+高维时会有平时在低维空间中不会出现的问题，如：
+
+-   存储复杂度
+-   计算复杂度
+-   采样困难
+-   最近邻的搜索
+-   非参数估计
+-   etc.
+
+### 复杂度优化
+
+有用于降低复杂性的各种精确和近似方法。
+
+对于计算复杂度，可以使用更好的数据结构，比如 KD-Tree；此外，还可以使用近似最近邻（Approximate Nearest Neighbor，ANN）算法、局部敏感哈希（Locality Sensitive Hashing，LSH）等。
+
+#### KD-Tree
+
+KD-Tree（K-Dimensional Tree）是一种用于高效存储和检索$k$维数据的数据结构。它是一种二叉树，每个节点代表一个$k$维数据点，并根据数据点在每个维度上的值将空间划分为两个子空间。KD-Tree的构建过程基于递归地选择一个维度和一个切分值，将数据点分配到左右子树中。
+
+下面是KD-Tree的构建过程的简要描述：
+
+1. 选择一个维度：从$k$个维度中选择一个维度作为切分维度。通常是按照某种规则选择，比如轮流选择或选择方差最大的维度。
+
+2. 选择一个切分值：在选择的切分维度上，选择一个切分值，将数据点划分到左右子树中。切分值可以是中位数、平均值或其他选择方法。
+
+3. 划分数据点：将数据点根据切分值划分到左右子树中。所有小于等于切分值的数据点分配到左子树，大于切分值的数据点分配到右子树。
+
+4. 递归构建子树：对左右子树递归地执行以上步骤，直到每个叶节点只包含一个数据点或没有数据点。
+
+构建完成后，KD-Tree可以用于高效地执行各种操作，如最近邻搜索、范围搜索和近似最近邻搜索。这些操作利用了KD-Tree的结构特点，通过避免不必要的搜索来提高效率。
+
+最近邻搜索是KD-Tree中最常见的操作之一。给定一个查询点，KD-Tree可以快速找到与查询点最近的数据点。搜索过程从根节点开始，根据查询点在当前维度上与切分值的关系，选择进入左子树或右子树。然后，递归地在选择的子树中执行相同的搜索过程，直到找到最近的数据点或搜索完整个树。
+
+范围搜索是另一个常见的操作，用于找到在给定范围内的所有数据点。搜索过程类似于最近邻搜索，但在每个节点上需要考虑查询范围与切分超平面的关系，以确定是否需要进入左子树或右子树。
+
+反正问就是好好好（x
+
+对于切分有困惑的话，可以看幻灯片中的二维 KD-Tree 构建样例。
+
+KD-Tree 执行最近邻搜索之所以快，是因为它可以避免搜索不必要的子树。这有点像高维度中的二分查找，我是这样理解的。
+
+不过，KD-Tree 不适合在**极高维**空间中有效地查找最近邻。因为此时，有太多分支需要回溯，使得开销接近线性时间。
+
+复杂度也许没必要了解吧……
+
+### 总结
+
+优点：
+
+-   简单直观，训练非常快，易于实施
+-   特别适合多分类问题
+-   凭借无限的训练数据和足够大的 $K$，KNN 方法效果很好
+
+缺点：
+
+-   对噪声特征敏感
+-   即使在测试时也将所有训练数据存储在内存中
+-   查询时速度慢：每个测试点的计算量为 O(nd)
+-   高维时会有维度灾难
+
 ## 回归学习
+
+牢记 classification 任务的输出是离散的，而 regression 任务的输出是连续的。
+
+一些典型案例：
+
+|  Regression  | Classification |
+| :----------: | :------------: |
+|   房价预测   |    性别分类    |
+| 作物产量预测 |    电影种类    |
+|   身高预测   |    好瓜坏瓜    |
+
+回归学习的目标是学习一个预测函数 $f$，使得 $f(\mathbf{x})$ 尽可能接近 $y$；同时，对于新的输入 $\mathbf{x}$，$f(\mathbf{x})$ 可以预测出相应的输出 $y$。至于这个函数，可以是线性的，也可以是非线性的。
+
+![Regression_Task_with_Linear_and_Non_Linear_Function](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Regression_Task_with_Linear_and_Non_Linear_Function.png)
+
+回归是一个监督学习问题。之所以这么说，是因为我们需要有标签 $y$ 来指导我们的学习过程。
+
+根据输入值的个数，回归学习可以分为一元回归（Univariate Regression）和多元回归（Multivariate Regression）；根据预测函数的形式，回归学习可以分为线性回归（Linear Regression）和非线性回归（Nonlinear Regression）。
+
+### 线性回归
+
+幻灯片的例子：
+
+$$
+\begin{aligned}
+\text{二维：}\quad&y_{\text{房价}}=w_{1}\cdot x_{\text{面积}}+b\\
+\text{三维：}\quad&y_{\text{房价}}=w_{1}\cdot x_{\text{面积}}+w_{2}\cdot x_{\text{楼层}}+b\\
+\text{多维：}\quad&y_{\text{房价}}=w_{1}\cdot x_{1}+w_{2}\cdot x_{2}+\cdots+w_{n}\cdot x_{n}+b
+\end{aligned}
+$$
+
+所以总是可以写成：
+
+$$
+\mathbf{y}=f(\mathbf{x})=\mathbf{w}^{T}\mathbf{x}+b
+$$
+
+其中，$\mathbf{w}=(w_{1}, w_{2}, \ldots, w_{n})^{T}$ 是权重向量，$b$ 是偏置项。
 
 ## 深度学习
 
