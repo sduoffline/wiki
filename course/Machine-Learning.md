@@ -2,7 +2,7 @@
 title: 机器学习
 description: For 数媒。无论从哪方面来说都很抽象（
 published: true
-date: 2024-01-14T11:42:46.788Z
+date: 2024-01-14T13:18:08.837Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -2376,6 +2376,344 @@ CNN 的主要结构是：
 ![Some_Explanation_of_Convolution](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Some_Explanation_of_Convolution.png)
 
 ## 集成学习
+
+集成学习（Ensemble Learning）是一种机器学习范式，它通过将多个学习器进行组合来解决单一预测问题。集成学习的目标是将多个学习器组合成一个预测模型，以获得比单个学习器更好的泛化能力。
+
+集成的方式，总体来说可以分为：
+
+1.  Boosting
+2.  Bagging
+
+集成学习：
+
+-   同质集成（homogeneous ensemble）：集成中的所有学习器都是同一模型生成的。
+-   异质集成（heterogeneous ensemble）：集成中的学习器可以是不同的模型生成的。
+-   弱学习器（weak learner）：在学习过程中，学习器的性能比随机猜测略好的学习器。
+
+基础学习器越准确、越多样化，集成就越好。（即好而不同）然而，基础学习器的“准确性”和“多样性”是相互矛盾的。
+
+### 并行方法
+
+并行方法（Parallel Methods）是一种集成学习方法，它通过训练多个基础学习器来构建集成模型。并行方法的基本思想是，训练多个基础学习器，然后将它们组合成一个集成模型。并行方法的优点是易于实现，但它的缺点是基础学习器之间的依赖性。
+
+#### Baggging
+
+Bagging（Bootstrap Aggregating）是集成学习中的一种方法，旨在通过构建多个基学习器并对它们的预测进行组合来改善模型的性能。Bagging的基本思想是通过自助采样（Bootstrap Sampling）和聚合（Aggregation）来减少模型的方差。
+
+Bagging 的基础是通过使用一种名为 bootstrap 的统计技术获得与原始训练集 L 大小相同的不同训练集。
+
+所谓 bootstrap，就是从原始训练集 L 中随机采样 $m$ 个样本，然后将这 $m$ 个样本放回，再从中随机采样 $m$ 个样本，重复这个过程 $m$ 次，最终得到 $m$ 个大小为 $m$ 的训练集。这个过程就是 bootstrap。它使得训练集 $L_{i}$ 每一个都带有和原数据集 $L$ 相比略有不同的特征。
+
+$x^{\ast}=(x_{1}^{\ast}, x_{2}^{\ast}, \ldots, x_{m}^{\ast})$ 是从原样本 $x=(x_{1}, x_{2}, \ldots, x_{m})$ 中随机采样得到的样本。显然，$x^{\ast}$ 中有的样本可能重复，有的样本可能没有出现。
+
+$$
+\begin{aligned}
+\lim\limits_{m\rightarrow\infty}[1-(1-\frac{1}{m})^{m}]&=\lim\limits_{m\rightarrow\infty}[1-((1+\frac{1}{-m})^{-m})^{-1}]\\
+&=1-e^{-1}\\
+&\approx 0.632
+\end{aligned}
+$$
+
+这个公式揭示了，每个训练子集中仅使用原始训练集的 $63.2\%$ 样本，因此 $36.8\%$ 的样本可以用作验证集。这个大约 $1/3$ 的样本称为 out-of-bag（OOB）样本。
+
+总体结构：
+
+![The_Overall_Structure_of_Bagging](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Overall_Structure_of_Bagging.png)
+
+另外，Bagging 可以减小模型的方差。
+
+>   集成学习是不是都可以减小方差……？
+
+#### 随机森林
+
+随机森林（Random Forest）是一种集成学习方法，它通过构建多个决策树并对它们的预测进行组合来改善模型的性能。随机森林的基本思想是通过随机选择特征子集来减少模型的方差。
+
+随机森林是对 Bagging 的改进，它的 base learner 是决策树。
+
+随机森林有放回构造训练集；随机选取$m$个特征构建决策树。同朴素的决策树不同，随机森林引入随机属性扰动，使得每棵树的训练集不同，从而使得每棵树的结构不同；并且，随机森林的每棵树都是完全生长的，不进行剪枝。
+
+![The_Overall_Structure_of_Random_Forest](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Overall_Structure_of_Random_Forest.png)
+
+### 串行方法
+
+串行方法依赖于基学习器之间的顺序关系。串行方法的基本思想是通过顺序训练多个基学习器，每个基学习器都专注于先前迭代中预测错误的样本。串行方法的优点是基础学习器之间的依赖性较低，但它的缺点是易于过拟合（当然，这意味着串行方法可以减小模型的偏差）。
+
+#### Boosting
+
+在集成学习中，串行方法是一种通过顺序训练多个基学习器的方法。其中，Boosting是一种常见的串行集成学习方法。
+
+Boosting的基本思想是通过迭代训练多个弱学习器，每次迭代都根据前一轮的预测结果来调整样本的权重，使得基学习器更关注先前迭代中预测错误的样本。通过这种方式，Boosting可以逐步减小模型的偏差，并提高模型的准确性。
+
+下面是Boosting的基本步骤：
+
+1. 初始化样本权重：将每个样本的权重初始化为相等值，通常为 $\frac{1}{N}$，其中 $N$ 是样本数量。
+
+2. 迭代训练基学习器：在每一轮迭代中，根据当前样本权重训练一个基学习器。训练过程中，样本的权重会根据前一轮的预测结果进行调整，即被错误预测的样本会被赋予更高的权重。
+
+3. 更新样本权重：根据当前基学习器的预测结果，更新每个样本的权重。被正确预测的样本权重会减小，而被错误预测的样本权重会增加。
+
+4. 组合基学习器：将每个基学习器的预测结果按照一定的权重进行组合，通常是通过加权投票或加权平均的方式。
+
+5. 重复迭代：重复步骤2至步骤4，直到达到预定的迭代次数或满足停止条件。
+
+最终，Boosting通过组合多个基学习器的预测结果，将它们的优势进行整合，得到一个更强大的集成模型。由于每个基学习器都专注于先前迭代中预测错误的样本，Boosting可以逐步减小模型的偏差，并提高整体模型的准确性。
+
+常见的Boosting算法包括AdaBoost（Adaptive Boosting）、Gradient Boosting和XGBoost（eXtreme Gradient Boosting）等。它们在迭代过程中采用不同的策略来调整样本权重和基学习器的权重，以进一步提高模型的性能。
+
+#### AdaBoost
+
+![An_Example_of_AdaBoost_p1](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/An_Example_of_AdaBoost_p1.png)
+
+![An_Example_of_AdaBoost_p2](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/An_Example_of_AdaBoost_p2.png)
+
+输入：
+
+$$
+\begin{aligned}
+\text{训练集}\quad&\mathcal{D}=\{(x_{1}, y_{1}), (x_{2}, y_{2}), \ldots, (x_{m}, y_{m})\}\\
+\text{基学习器}\quad&\mathfrak{L}\\
+\text{迭代次数}\quad&T
+\end{aligned}
+$$
+
+过程：
+
+![The_Process_of_AdaBoost](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/The_Process_of_AdaBoost.png)
+
+输出：
+
+$$
+H(x)=\text{sign}(\sum_{t=1}^{T}\alpha_{t}h_{t}(x))
+$$
+
+其中，$\text{sign}$ 是符号函数，$\alpha_{t}$ 是基学习器 $h_{t}$ 的权重。
+
+还是看看详细例子：
+
+![A_Detailed_Example_of_AdaBoost_p1](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p1.png)
+
+![A_Detailed_Example_of_AdaBoost_p2](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p2.png)
+
+![A_Detailed_Example_of_AdaBoost_p3](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p3.png)
+
+![A_Detailed_Example_of_AdaBoost_p4](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p4.png)
+
+![A_Detailed_Example_of_AdaBoost_p5](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p5.png)
+
+![A_Detailed_Example_of_AdaBoost_p6](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p6.png)
+
+![A_Detailed_Example_of_AdaBoost_p7](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p7.png)
+
+![A_Detailed_Example_of_AdaBoost_p8](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p8.png)
+
+![A_Detailed_Example_of_AdaBoost_p9](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p9.png)
+
+![A_Detailed_Example_of_AdaBoost_p10](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p10.png)
+
+![A_Detailed_Example_of_AdaBoost_p11](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A_Detailed_Example_of_AdaBoost_p11.png)
+
+### Fusion 策略
+
+其实就是出了好多结果了，怎么把这些结果组合起来。
+
+>   我会说它是融合策略，但我不确定一般是不是翻译成这个（
+
+#### 平均
+
+朴素的平均就只是对结果平均了一下而已：
+
+$$
+H(x)=\frac{1}{T}\sum_{t=1}^{T}h_{t}(x)
+$$
+
+加权平均：
+
+$$
+H(x)=\sum_{t=1}^{T}\omega_{t}h_{t}(x)
+$$
+
+其中：
+
+$$
+\omega_{t}\ge 0\\
+\sum_{t=1}^{T}\omega_{t}=1
+$$
+
+一般而言，在个体学习器性能相差较大时宜使用加权平均法，个体学习器性能相近时宜使用简单平均法。（倒也合理）
+
+#### 投票
+
+学习器 $h_{i}$ 的预测结果是类别标签集合 ${c_{1}, c_{2}, \ldots, c_{n}}$ 中的一个，投票法的基本思想是选择预测结果最多的类别标签作为集成模型的预测结果。
+
+我们先约定 $h_{i}$ 在样本 $x$ 上的预测结果是 $(h^{1}_{i}(\mathbf{x}), h^{2}_{i}(\mathbf{x}), \ldots, h^{n}_{i}(\mathbf{x}))$，其中 $h^{j}_{i}(\mathbf{x})$ 是 $h_{i}$ 在样本 $x$ 上预测为类别标签 $c_{j}$ 的输出。
+
+**绝对多数投票法**
+
+即 Majority Voting，它的基本思想是选择预测结果最多的类别标签作为集成模型的预测结果。
+
+$$
+H(\mathbf{x})=\begin{cases}
+c_{j}&\text{,}\,\text{if}\,\sum_{i=1}^{T}h_{i}^{j}(\mathbf{x})\gt\frac{1}{2}\sum_{k=1}^{l}\sum_{i=1}^{T}h_{i}^{k}(\mathbf{x})\\
+\text{Rejection}&\text{,}\,\text{otherwise}
+\end{cases}
+$$
+
+其中，$l$ 是类别标签的数量。
+
+**相对多数投票法**
+
+即 Plurality Voting，它的基本思想是选择预测结果最多的类别标签作为集成模型的预测结果。
+
+$$
+H(\mathbf{x})=c_{\arg\max\limits_{j}\sum_{i=1}^{T}h_{i}^{j}(\mathbf{x})}
+$$
+
+**加权投票法**
+
+即 Weighted Voting，它其实就是 Plurality Voting 的加权版本。
+
+$$
+H(\mathbf{x})=c_{\arg\max\limits_{j}\sum_{i=1}^{T}\omega_{i}h_{i}^{j}(\mathbf{x})}
+$$
+
+其中，$\omega_{i}$ 是学习器 $h_{i}$ 的权重。
+
+### 多样性度量
+
+显然，如果个体学习器的准确率越高，多样性越大，则集成越好。
+
+误差-分歧分解（Error-Diversity Decomposition）是一种用于分析集成学习器性能的方法，它将集成学习器的误差分解为偏差、方差和分歧三个部分。
+
+$$
+E=\bar{E}-\bar{A}
+$$
+
+其中，$E$ 就是集成误差;
+
+$\bar{E}=\sum_{t=1}^{T}\omega_{t}E_{t}$ 是个体学习器泛化误差的加权均值。
+
+$\bar{A}=\sum_{t=1}^{T}\omega_{t}A_{t}$ 是个体学习器的加权差异性。
+
+------
+
+给定数据集 $\mathcal{D}=\{(x_{1}, y_{1}), (x_{2}, y_{2}), \ldots, (x_{m}, y_{m})\}$，对于二分类问题，假设 $y\in\{-1, +1\}$。分类器 $h_{i}$ 和 $h_{j}$ 的预测结果列联表（Contingency Table）如下：
+
+|            | $h_{i}=+1$ | $h_{i}=-1$ |
+| :--------: | :--------: | :--------: |
+| $h_{j}=+1$ |     a      |     c      |
+| $h_{j}=+1$ |     b      |     d      |
+
+其中，$a$ 表示 $h_{i}$ 和 $h_{j}$ 都预测正确的样本数量，$b$、$c$ 和 $d$ 由此类推。而且，$a+b+c+d=m$。
+
+**不合度量**
+
+即 Disagreement Measure。
+
+$$
+\text{Dis}(ij)=\frac{b+c}{m}
+$$
+
+$\text{Dis}(ij)$ 表示 $h_{i}$ 和 $h_{j}$ 的不合度量，值域为 $[0, 1]$，值越大表示 $h_{i}$ 和 $h_{j}$ 的预测结果越不一致。
+
+**相关系数**
+
+即 Correlation Coefficient。
+
+$$
+\rho_{ij}=\frac{ad-bc}{\sqrt{(a+b)(c+d)(a+c)(b+d)}}
+$$
+
+$\rho_{ij}$ 表示 $h_{i}$ 和 $h_{j}$ 的相关系数，值域为 $[-1, 1]$。如果 $\rho_{ij}=1$，则表示 $h_{i}$ 和 $h_{j}$ 的预测结果完全一致；如果 $\rho_{ij}=-1$，则表示 $h_{i}$ 和 $h_{j}$ 的预测结果完全相反；如果 $\rho_{ij}=0$，则表示 $h_{i}$ 和 $h_{j}$ 的预测结果不相关。
+
+**Q 统计量**
+
+$$
+Q_{ij}=\frac{ad-bc}{ad+bc}
+$$
+
+须知，$|Q_{ij}|\le|\rho_{ij}|$。
+
+**Kappa 统计量**
+
+$$
+\kappa_{ij}=\frac{p_{1}-p_{2}}{1-p_{2}}\\
+p_{1}=\frac{a+d}{m}\\
+p_{2}=\frac{(a+b)(a+c)+(c+d)(b+d)}{m^{2}}
+$$
+
+其中，$p_{1}$ 表示 $h_{i}$ 和 $h_{j}$ 预测结果一致的概率，$p_{2}$ 表示 $h_{i}$ 和 $h_{j}$ 偶然达成一致的概率。
+
+>   ？？？
+
+$\kappa$越大，说明两个学习器的一致性越高。相反，$\kappa$越小，说明两个学习器的一致性越低。
+
+### 多样性增强
+
+在集成学习中需有效的生成多样性大的个体学习器，一般思路是在学习过程中引入随机性。
+
+-   数据样本扰动
+-   输入属性扰动
+-   输出表示扰动
+-   算法参数扰动
+
+**数据样本扰动**
+
+给定初始数据集，可从中产生出不同的数据子集，再利用不同的数据子集训练出不同的个体学习器。数据样本扰动通常是基于采样法：Boosting、Bagging。
+
+这对于不稳定基学习器（决策树、神经网络...）很有效。
+
+**输入属性扰动**
+
+对于稳定基学习器（LDA、SVM、KNN...），从初始属性集中抽取出若干个属性子集，基于每个属性子集训练一个基学习器。
+
+对包含大量冗余属性的数据，在子空间中训练个体学习器不仅能产生多样性大的个体，还会因属性数的减少而节省时间开销。
+
+**输出表示扰动**
+
+将原任务拆解为多个可同时求解的子任务或者是将分类输出转化为回归输出后构建个体学习器。
+
+**算法参数扰动**
+
+基学习算法一般都有参数需要设置，例如神经网络的神经元数，初始连接权值等，通过随机设置不同的参数。往往可产生差别较大的个体学习器。
+
+### 题目
+
+Q：试分析随机森林为什么比决策树bagging集成的训练速度更快？
+
+A：随机森林是一种集成学习方法，它由多个决策树组成。相比于单个决策树的bagging集成，随机森林在训练速度上通常更快，这主要归因于以下几个方面：
+
+1. 并行化处理：随机森林中的决策树可以并行生成，每个决策树都是独立训练的。这意味着在拥有多个处理器或多个计算节点的情况下，可以同时训练多个决策树，从而加快训练速度。相比之下，决策树的bagging集成通常是串行生成的，每个决策树都依赖于前一个决策树的结果，无法并行化处理。
+
+2. 特征子集采样：随机森林在生成每个决策树时，对于每个节点的特征进行随机子集采样。这意味着每个决策树只使用了部分特征进行训练，而不是使用全部特征。这种特征子集采样可以减少每个决策树的计算量，进而提高训练速度。相比之下，决策树的bagging集成通常使用全部特征进行训练。
+
+3. 数据子集采样：随机森林在生成每个决策树时，对于每个节点的训练样本进行随机子集采样。这意味着每个决策树只使用了部分训练样本进行训练，而不是使用全部训练样本。这种数据子集采样可以减少每个决策树的计算量，进而提高训练速度。相比之下，决策树的bagging集成通常使用全部训练样本进行训练。
+
+综上所述，随机森林通过并行化处理、特征子集采样和数据子集采样等技术手段，能够在训练过程中减少计算量，从而提高训练速度。
+
+Q：了解 GBDT、XGBoost 原理
+
+A：GBDT（Gradient Boosting Decision Trees）是一种集成学习算法，它通过组合多个决策树来构建一个强大的预测模型。XGBoost（eXtreme Gradient Boosting）是GBDT的一种优化实现，它在GBDT的基础上进行了改进，提供了更高的性能和可扩展性。
+
+GBDT的原理如下：
+1. 初始化模型：将所有样本的预测值初始化为一个常数，通常为目标变量的均值。
+2. 迭代训练：每次迭代中，GBDT通过拟合一个新的决策树来减少当前模型的残差。它通过计算当前模型对每个样本的预测值与实际值之间的残差，然后用这些残差作为新的目标值来训练一个新的决策树。
+3. 更新模型：将新生成的决策树与当前模型进行加权组合，得到一个更新后的模型。为了避免过拟合，每棵树的贡献通过一个学习率进行缩放，通常小于1。
+4. 重复迭代：重复步骤2和步骤3，直到达到预定的迭代次数或满足停止条件。
+
+GBDT的优点包括：
+- 能够处理各种类型的特征，包括连续特征和离散特征。
+- 能够自动捕捉特征之间的非线性关系。
+- 在处理缺失值时具有鲁棒性。
+- 可以灵活处理不同类型的损失函数。
+
+XGBoost是对GBDT的改进，它在GBDT的基础上引入了一些新的技术和优化：
+1. 正则化：XGBoost引入了正则化项，包括L1正则化和L2正则化，用于控制模型的复杂度，防止过拟合。
+2. 列抽样：XGBoost支持对特征进行列抽样，这样每次训练决策树时只使用部分特征，可以提高模型的泛化能力和效率。
+3. 并行计算：XGBoost使用多线程进行并行计算，加快了模型的训练速度。
+4. 缺失值处理：XGBoost能够自动处理缺失值，无需对缺失值进行特殊处理。
+5. 特征权重：XGBoost可以计算特征的重要性，帮助理解模型的预测过程。
+
+总的来说，GBDT和XGBoost都是强大的预测模型，它们通过组合多个决策树来提高预测性能。XGBoost在GBDT的基础上进行了优化，提供了更多的功能和性能，成为了机器学习竞赛中常用的算法之一。
 
 ## 聚类
 
