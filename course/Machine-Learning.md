@@ -2,7 +2,7 @@
 title: 机器学习
 description: For 数媒。无论从哪方面来说都很抽象（
 published: true
-date: 2024-01-15T09:23:01.897Z
+date: 2024-01-15T09:36:03.486Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -137,7 +137,7 @@ $$
 L(\mathbf{w},b,\alpha)=\frac{1}{2}||\mathbf{w}||^{2}-\sum\limits_{i=1}^{n}\alpha_{i}[y_{i}(\mathbf{w}^{T}\mathbf{x_{i}}+b)-1]\quad (\alpha_{i}\ge 0)
 $$
 
-直接说，满足 KTT 条件（别问，问就是满足）所以可以转化为 Lagrange 对偶式：
+直接说，满足 KKT 条件（别问，问就是满足）所以可以转化为 Lagrange 对偶式：
 
 $$
 L_{d}=\sum\limits_{i=1}^{n}\alpha_{i}-\frac{1}{2}\sum\limits_{i=1}^{n}\sum\limits_{j=1}^{n}\alpha_{i}\alpha_{j}y_{i}y_{j}\mathbf{x_{i}}\cdot\mathbf{x_{j}}
@@ -1935,9 +1935,9 @@ $$
 
 如果 $\Delta=0$，那么我们就说强对偶成立。此时，我们可以通过求解对偶问题来求解原问题。
 
-#### KTT 条件
+#### KKT 条件
 
-对于一个凸优化问题，如果存在最优解（或者干脆说强对偶关系存在），那么这个 Lagrange 函数一定满足 KTT 条件，即：
+对于一个凸优化问题，如果存在最优解（或者干脆说强对偶关系存在），那么这个 Lagrange 函数一定满足 KKT 条件，即：
 
 $$
 \begin{aligned}
