@@ -2,7 +2,7 @@
 title: 机器学习
 description: For 数媒。无论从哪方面来说都很抽象（
 published: true
-date: 2024-01-15T08:49:52.153Z
+date: 2024-01-15T08:52:15.854Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-13T20:15:25.431Z
@@ -266,13 +266,13 @@ $$
 损失相对于输出层权重 $W_{2}$ 的梯度可以计算为：
 
 $$
-\frac{\partial \text{损失}}{\partial W_{2}} = \frac{\partial \text{损失}}{\partial Y} \cdot \frac{\partial Y}{\partial (W_{2}H + b_{2})} \cdot \frac{\partial (W_{2}H + b_{2})}{\partial W_{2}}
+\frac{\partial \text{Loss}}{\partial W_{2}} = \frac{\partial \text{Loss}}{\partial Y} \cdot \frac{\partial Y}{\partial (W_{2}H + b_{2})} \cdot \frac{\partial (W_{2}H + b_{2})}{\partial W_{2}}
 $$
 
 类似地，损失相对于隐藏层权重 $W_{1}$ 的梯度可以计算为：
 
 $$
-\frac{\partial \text{损失}}{\partial W_{1}} = \frac{\partial \text{损失}}{\partial Y} \cdot \frac{\partial Y}{\partial (W_{2}H + b_{2})} \cdot \frac{\partial (W_{2}H + b_{2})}{\partial H} \cdot \frac{\partial H}{\partial (W_{1}X + b_{1})} \cdot \frac{\partial (W_{1}X + b_{1})}{\partial W_{1}}
+\frac{\partial \text{Loss}}{\partial W_{1}} = \frac{\partial \text{Loss}}{\partial Y} \cdot \frac{\partial Y}{\partial (W_{2}H + b_{2})} \cdot \frac{\partial (W_{2}H + b_{2})}{\partial H} \cdot \frac{\partial H}{\partial (W_{1}X + b_{1})} \cdot \frac{\partial (W_{1}X + b_{1})}{\partial W_{1}}
 $$
 
 类似地，我们可以计算相对于偏差 $b_{2}$ 和 $b_{1}$ 的梯度。
@@ -287,8 +287,9 @@ $W_{1} = 0.5$，$W_{2} = 0.8$，$b_{1} = 0.2$，$b_{2} = 0.3$。
 假设我们有一个输入 $X = 0.7$ 和真实输出 $Y_{\text{true}} = 0.9$。
 
 使用前向传播方程，我们可以计算预测输出 $Y$，如下所示：
-$H = \sigma(0.5 \cdot 0.7 + 0.2) = \sigma(0.35 + 0.2) = \sigma(0.55) \约 0.634$
-$Y = \sigma(0.8 \cdot 0.634 + 0.3) = \sigma(0.5072 + 0.3) = \sigma(0.8072) \约 0.691$
+$$
+H = \sigma(0.5 \cdot 0.7 + 0.2) = \sigma(0.35 + 0.2) = \sigma(0.55) \approx 0.634\\
+Y = \sigma(0.8 \cdot 0.634 + 0.3) = \sigma(0.5072 + 0.3) = \sigma(0.8072) \approx 0.691$
 
 现在，我们可以使用链式法则计算梯度并更新权重和偏差以最小化损失函数。
 
