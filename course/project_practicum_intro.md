@@ -2,7 +2,7 @@
 title: 项目实训（创新）开题参考手册
 description: 本页将从项目构思、资料搜集、难度估计和过程管理等方面分享学生在线在工作中积累的经验，希望能帮助各位顺利完成开题答辩和后续工作。
 published: true
-date: 2024-03-24T17:52:03.280Z
+date: 2024-03-24T17:55:22.746Z
 tags: 
 editor: markdown
 dateCreated: 2024-03-23T16:49:50.687Z
@@ -184,6 +184,19 @@ dateCreated: 2024-03-23T16:49:50.687Z
 理论上，现在你可以使用类似MySQL+MyBatis+Spring Boot的组合进行开发，其他的部分可以暂时不做考虑。无论如何，这个组合一定能保证项目完成。
 
 ### Web前端可选方案
+
+前端目前只需要考虑两个框架：
+
+- React：难，新手别选。
+- Vue（3）：简单，选就对了。
+
+不管在二者中选择哪个，都需要去找以下几种包：
+
+- 一个好用的组件库：Vue推荐Vuetify。
+- 状态管理：Vue直接选用Pinia即可。
+- 路由管理：Vue直接选用Vue Router即可。
+- 网络状态：使用TanStack Query（前React Query）监听网络状态。
+- CSS相关：选择喜欢的CSS预编译器或原子CSS（例如Tailwind）。
 
 ### 移动客户端可选方案
 
