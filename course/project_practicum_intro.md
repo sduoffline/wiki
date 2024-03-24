@@ -2,7 +2,7 @@
 title: 项目实训（创新）开题参考手册
 description: 本页将从项目构思、资料搜集、难度估计和过程管理等方面分享学生在线在工作中积累的经验，希望能帮助各位顺利完成开题答辩和后续工作。
 published: true
-date: 2024-03-24T17:39:54.293Z
+date: 2024-03-24T17:40:15.941Z
 tags: 
 editor: markdown
 dateCreated: 2024-03-23T16:49:50.687Z
@@ -152,6 +152,8 @@ dateCreated: 2024-03-23T16:49:50.687Z
 - Web框架：例如Spring Boot、Gin。
 - ORM框架：例如MyBatis、gorm。
 - 网关：例如Nginx。
+
+首先说
 
 ### Web前端可选方案
 
