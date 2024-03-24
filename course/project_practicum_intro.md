@@ -2,7 +2,7 @@
 title: 项目实训（创新）开题参考手册
 description: 本页将从项目构思、资料搜集、难度估计和过程管理等方面分享学生在线在工作中积累的经验，希望能帮助各位顺利完成开题答辩和后续工作。
 published: true
-date: 2024-03-24T17:50:15.551Z
+date: 2024-03-24T17:52:03.280Z
 tags: 
 editor: markdown
 dateCreated: 2024-03-23T16:49:50.687Z
@@ -176,7 +176,12 @@ dateCreated: 2024-03-23T16:49:50.687Z
 
 现在我们要解决的是如何在Web框架中操作数据库，负责这个操作的框架称为ORM（Object-Relation-Mapping）框架，同样按照语言分类：
 
+- Java：MyBatis、MyBatis Plus都可以；JPA很好，但对设计要求比较高，笔者并不建议。
+- Python：忘了。
+- js/js：忘了。
+- go：gorm，类似JPA。
 
+理论上，现在你可以使用类似MySQL+MyBatis+Spring Boot的组合进行开发，其他的部分可以暂时不做考虑。无论如何，这个组合一定能保证项目完成。
 
 ### Web前端可选方案
 
