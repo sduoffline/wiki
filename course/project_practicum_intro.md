@@ -2,7 +2,7 @@
 title: 项目实训（创新）开题参考手册
 description: 本页将从项目构思、资料搜集、难度估计和过程管理等方面分享学生在线在工作中积累的经验，希望能帮助各位顺利完成开题答辩和后续工作。
 published: true
-date: 2024-03-24T17:58:35.896Z
+date: 2024-03-24T18:00:52.185Z
 tags: 
 editor: markdown
 dateCreated: 2024-03-23T16:49:50.687Z
@@ -210,6 +210,16 @@ dateCreated: 2024-03-23T16:49:50.687Z
 - ChatGLM：表现很好的开源LLM，适合进行微调或外接知识库。
 - llama：另一款表现很好的开源LLM。
 - Langchain：一种使LLM能够访问外部知识的方式，适合扩展LLM的领域知识。
+
+AIGC相关的工作：
+
+- Midjourney：商用的AI绘图网站。
+- Dalle3: OpenAI的AI绘图模型，也是很好。
+- Stable Diffusion：AIGC鼻祖，目前发展到SDXL+Lora时代，上限极高。
+
+其他还算大的模型：
+
+- SAM（Segment Anything）：Meta推出的多模态的分割/监测网络，十分牛皮。
 
 ### 神经网络部署可选方案
 
