@@ -2,7 +2,7 @@
 title: 项目实训（创新）开题参考手册
 description: 本页将从项目构思、资料搜集、难度估计和过程管理等方面分享学生在线在工作中积累的经验，希望能帮助各位顺利完成开题答辩和后续工作。
 published: true
-date: 2024-03-24T17:48:56.445Z
+date: 2024-03-24T17:50:15.551Z
 tags: 
 editor: markdown
 dateCreated: 2024-03-23T16:49:50.687Z
@@ -173,6 +173,9 @@ dateCreated: 2024-03-23T16:49:50.687Z
 - Python：Flask、FastAPI都可以，Django比较重量级，不太建议。
 - js/ts：Node.js。
 - go：gin即可，不要选择go-zero这种分布式框架。
+
+现在我们要解决的是如何在Web框架中操作数据库，负责这个操作的框架称为ORM（Object-Relation-Mapping）框架，同样按照语言分类：
+
 
 
 ### Web前端可选方案
