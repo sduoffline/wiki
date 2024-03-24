@@ -2,7 +2,7 @@
 title: 后端面试八股速记
 description: 
 published: true
-date: 2024-03-24T02:51:32.851Z
+date: 2024-03-24T02:55:31.566Z
 tags: 
 editor: markdown
 dateCreated: 2024-03-24T02:44:57.503Z
@@ -175,7 +175,9 @@ reentrantLock方式，使用lock加锁，通过signal、signalAll和await来进�
 减少发送请求：合并请求、减少重定向、延迟发送
 数据压缩：有损压缩和无损压缩（霍夫曼编码）
 
+### RSA缺陷
 
-
+不支持前向保密：一旦服务器私钥泄露，之前所有被截获的密文都会被解密
+现在大多数使用的是ECDHE密钥协商算法
 
 
