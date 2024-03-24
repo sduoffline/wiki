@@ -2,7 +2,7 @@
 title: 后端面试八股速记
 description: 
 published: true
-date: 2024-03-24T02:55:31.566Z
+date: 2024-03-24T13:10:01.903Z
 tags: 
 editor: markdown
 dateCreated: 2024-03-24T02:44:57.503Z
@@ -180,4 +180,15 @@ reentrantLock方式，使用lock加锁，通过signal、signalAll和await来进�
 不支持前向保密：一旦服务器私钥泄露，之前所有被截获的密文都会被解密
 现在大多数使用的是ECDHE密钥协商算法
 
+### ECDHE算法
+
+DH算法：基于离散对数，沟通双方分别设置一个私钥a、b。然后通过公开的G、P计算得出$A=G^a(mod P),B = G ^ b(mod P)$。A、B也公开。然后可以知道$A^b=B^a$,就以此作为密钥。
+
+DHE算法：通信双发的密钥每次会话都是随机生成的，不是固定的，这样可以保证即使有一次会话密钥泄露了，那么之前的对话也是安全的。具有前向安全性
+
+ECDHE算法：基于椭圆曲线，计算速度更快
+
+### HTTP与RPC的区别
+
+吴羲勇nbbbbbbbbbbb
 
