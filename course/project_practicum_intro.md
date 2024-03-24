@@ -2,7 +2,7 @@
 title: 项目实训（创新）开题参考手册
 description: 本页将从项目构思、资料搜集、难度估计和过程管理等方面分享学生在线在工作中积累的经验，希望能帮助各位顺利完成开题答辩和后续工作。
 published: true
-date: 2024-03-24T17:46:50.412Z
+date: 2024-03-24T17:48:56.445Z
 tags: 
 editor: markdown
 dateCreated: 2024-03-23T16:49:50.687Z
@@ -169,7 +169,10 @@ dateCreated: 2024-03-23T16:49:50.687Z
 
 好了，选完数据库你应该知道如何保存自己的数据。接下来先选择一个Web框架：
 
-- Java：Spring Boot
+- Java：无脑Spring Boot，版本也无所谓，能跑起来就很好。
+- Python：Flask、FastAPI都可以，Django比较重量级，不太建议。
+- js/ts：Node.js。
+- go：gin即可，不要选择go-zero这种分布式框架。
 
 
 ### Web前端可选方案
