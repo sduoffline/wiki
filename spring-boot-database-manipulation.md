@@ -2,7 +2,7 @@
 title: 培训三：基于 Spring boot 的数据库操作
 description: 2022级后端培训文档
 published: true
-date: 2023-04-12T12:36:06.785Z
+date: 2024-08-08T06:05:32.049Z
 tags: 
 editor: markdown
 dateCreated: 2023-02-22T16:02:10.820Z
@@ -261,6 +261,16 @@ Finally! 我们要开始写代码了！
 ```
 
 没戳，在这个例子里我们用 `Mybatis-plus` ~~真·国货之光~~。
+
+> 在书写本wiki的时候，还不存在Spring boot 3，因此如果是现在照着上面的流程来而使用Spring Boot 3，则会导致错误。对于Spring Boot 3，正确的做法是导入对应新版本的依赖：
+{.is-danger}
+```xml
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+    <version>3.5.7</version>
+</dependency>
+```
 
 ### 连接 MySQL
 
