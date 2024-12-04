@@ -309,18 +309,18 @@ SSAO 是一种基于屏幕空间信息的简易全局光照算法。其核心思
 
 它的**基本思路**是:
 
-- 对场景中的每个像素点，向屏幕空间随机发射光线进行追踪，找到光线的第一个交点。
+-   对场景中的每个像素点，向屏幕空间随机发射光线进行追踪，找到光线的第一个交点。
 
-- 这个交点成为次级光源，其直接光照就是当前像素的间接光照。
+-   这个交点成为次级光源，其直接光照就是当前像素的间接光照。
 
-- **将所有次级光源的贡献累加**，可以估算出每个像素点接收的全局光照。
+-   **将所有次级光源的贡献累加**，可以估算出每个像素点接收的全局光照。
 
 **实现上**，需要构建深度图像的 mipmap，并利用深度信息判断光线何时与屏幕空间物体相交。相交后计算光照贡献。此外还需要**存储每个像素的位置、法线等信息**。
 
 **优点**是算法简单，质量较好，能很好地渲染镜面反射。**主要缺点**来自屏幕空间方法:
 
-- 无法考虑屏幕空间之外的光照交互、遮挡等信息。
-- 会出现边缘掉落等问题。
+-   无法考虑屏幕空间之外的光照交互、遮挡等信息。
+-   会出现边缘掉落等问题。
 
 SSR 支持各向异性材质，但假设次级光源为漫反射面。还原现实中的各类反射效果。
 
@@ -339,14 +339,14 @@ VBO（Vertex Buffer Object）：GPU 中用来存放模型的区域，和 obj 文
 
 GLSL 在 GAMES 202 中还没有到 in/out 的时代。顶点着色器的主要关键字如下：
 
-- `attribute`。顶点属性，只出现在顶点着色器中。
-- `varying`。在片段着色器中有同名定义，顶点着色器写好送给片段着色器。
-- `uniform`。相当于全局变量，顶点着色器和片段着色器都可以访问。
+-   `attribute`。顶点属性，只出现在顶点着色器中。
+-   `varying`。在片段着色器中有同名定义，顶点着色器写好送给片段着色器。
+-   `uniform`。相当于全局变量，顶点着色器和片段着色器都可以访问。
 
 片段着色器的主要关键字如下：
 
-- `varying`。已经做好插值了的值，从顶点着色器来的。
-- `uniform`。相当于全局变量，顶点着色器和片段着色器都可以访问。
+-   `varying`。已经做好插值了的值，从顶点着色器来的。
+-   `uniform`。相当于全局变量，顶点着色器和片段着色器都可以访问。
 
 ### Rendering Equation
 
@@ -358,10 +358,10 @@ $$
 
 其中：
 
-- $L_{o}(p, \omega_{o})$ 为 outgoing radiance，表示从点 $p$ 出发沿方向 $\omega_{o}$ 的辐射度。~~什么辐射度，我只知道 radiance~~
-- $L_{e}(p, \omega_{o})$ 为 emission。它表示表面自身发出的辐射度，比如自发光材质。
-- $f_{r}(p, \omega_{i}\rightarrow\omega_{o})$ 为 BRDF。它接受两个向量作为输入：入射光线的方向和观察者的视线方向。然后，它输出一个表示光线在该表面上反射的强度的值。不严谨地说，带不带$\cos$项其实是无所谓的，都是 BRDF。
-- $L_{i}(p, \omega_{i})$ 为 incident radiance。它表示了从周围环境中来自方向$\omega_{i}$的光线的能量。
+-   $L_{o}(p, \omega_{o})$ 为 outgoing radiance，表示从点 $p$ 出发沿方向 $\omega_{o}$ 的辐射度。~~什么辐射度，我只知道 radiance~~
+-   $L_{e}(p, \omega_{o})$ 为 emission。它表示表面自身发出的辐射度，比如自发光材质。
+-   $f_{r}(p, \omega_{i}\rightarrow\omega_{o})$ 为 BRDF。它接受两个向量作为输入：入射光线的方向和观察者的视线方向。然后，它输出一个表示光线在该表面上反射的强度的值。不严谨地说，带不带$\cos$项其实是无所谓的，都是 BRDF。
+-   $L_{i}(p, \omega_{i})$ 为 incident radiance。它表示了从周围环境中来自方向$\omega_{i}$的光线的能量。
 
 这样，方程就考虑了全局光照（global illumination）的影响。通过对周围环境中所有入射方向的辐射度进行积分，可以考虑到光线在环境中的散射、反射和遮挡等效应，从而获得更真实的渲染结果。
 
@@ -379,11 +379,11 @@ $$
 
 其中：
 
-- $L_{o}(p, \omega_{o})$ 为 outgoing lighting。
-- $L_{i}(p, \omega_{i})$ 为 incident lighting（from source）。
-- $f_{r}(p, \omega_{i}, \omega_{o})\cos{\theta_{i}}$ 为（cosine-weighted）BRDF。
-- $V(p, \omega_{i})$ 为 visibility。它描述了从点 p 出发沿方向 $\omega_{i}$ 的光线是否能够到达光源或其他可见点。
-- $\int_{\Omega^{+}}$ 表示对所有入射方向 $\omega_{i}$ 进行积分。$\Omega^{+}$ 表示半球面，即所有入射方向的集合。
+-   $L_{o}(p, \omega_{o})$ 为 outgoing lighting。
+-   $L_{i}(p, \omega_{i})$ 为 incident lighting（from source）。
+-   $f_{r}(p, \omega_{i}, \omega_{o})\cos{\theta_{i}}$ 为（cosine-weighted）BRDF。
+-   $V(p, \omega_{i})$ 为 visibility。它描述了从点 p 出发沿方向 $\omega_{i}$ 的光线是否能够到达光源或其他可见点。
+-   $\int_{\Omega^{+}}$ 表示对所有入射方向 $\omega_{i}$ 进行积分。$\Omega^{+}$ 表示半球面，即所有入射方向的集合。
 
 ---
 
@@ -409,7 +409,7 @@ SM 是一种完全在图像空间中的算法。
 
 Solution：认为发生遮挡，不仅要深度有大小关系，而且要“明显地”有大小关系，那就是说，如果差距不大，那就不认为发生了遮挡，也就不会产生自遮挡。即加一个 bias。然而，添加 bias 虽然可以有效缓解自遮挡，但却可能造成悬空，也就是说，本来应该遮挡的地方，因为在 bias 阈值内，因此渲染看上去不被遮挡，就造成了阴影悬空。
 
-\*参考阅读：[《GAMES202：高质量实时渲染》1 实时阴影：阴影映射（Shadow Mapping）、PCSS、VSSM、SDF Shadows](https://zhuanlan.zhihu.com/p/563672775)，第一章**阴影映射（Shadow Mapping）\***
+> 参考阅读：[《GAMES202：高质量实时渲染》1 实时阴影：阴影映射（Shadow Mapping）、PCSS、VSSM、SDF Shadows](https://zhuanlan.zhihu.com/p/563672775)，第一章 _阴影映射（Shadow Mapping）_
 
 ### Second-depth Shadow Mapping
 
@@ -417,8 +417,8 @@ Solution：认为发生遮挡，不仅要深度有大小关系，而且要“明
 
 缺点：
 
-- 要求物体必须 watertight，比如平面的纸就不行。
-- 实现稍微复杂了点，而且常数变大了，在 RTR 也很关注常数
+-   要求物体必须 watertight，比如平面的纸就不行。
+-   实现稍微复杂了点，而且常数变大了，在 RTR 也很关注常数
 
 ### 来点数学
 
@@ -446,8 +446,8 @@ $$
 
 什么时候这么做准确呢？
 
-- 当$g$的积分区限很小的时候
-- 当$g$足够光滑
+-   当$g$的积分区限很小的时候
+-   当$g$足够光滑
 
 有一个满足就能大胆约等。
 
@@ -474,14 +474,14 @@ $$
 
 所以反过来说，Shadow Mapping 不准的时候，就是：
 
-- 环境光（可以视作很大的面光源）导致 BRDF 不够 smooth
-- 材质很 glossy，这样 BRDF 也不够 smooth
+-   环境光（可以视作很大的面光源）导致 BRDF 不够 smooth
+-   材质很 glossy，这样 BRDF 也不够 smooth
 
 ### PCF
 
 Percentage Closer Filter（PCF）是一种用于阴影贴图采样的滤波器技术，用于减少阴影贴图采样带来的锯齿边缘。PCF 通过在每个阴影像素周围进行多次采样，并根据采样结果计算出阴影的平均值，从而实现柔和的阴影边缘。
 
-\*参考阅读：[《GAMES202：高质量实时渲染》1 实时阴影：阴影映射（Shadow Mapping）、PCSS、VSSM、SDF Shadows](https://zhuanlan.zhihu.com/p/563672775)，第二章**PCF（Percentage Closer Filtering）反走样\***
+> 参考阅读：[《GAMES202：高质量实时渲染》1 实时阴影：阴影映射（Shadow Mapping）、PCSS、VSSM、SDF Shadows](https://zhuanlan.zhihu.com/p/563672775)，第二章 _PCF（Percentage Closer Filtering）反走样_
 
 PCF 本身是为了做抗锯齿的，不过也能用来生成软阴影，那就是 PCSS。
 
@@ -544,7 +544,7 @@ PCSS 效果很好，但是朴素方式非常慢，因此需要加速。
 
 最简单的方式就是不查询全部，而是采样。这样就是近似，缺点是会产生 noise。最朴素的想法就是生成图像后，再在图像空间上滤波降噪来找补。
 
-\*参考阅读：[《GAMES202：高质量实时渲染》1 实时阴影：阴影映射（Shadow Mapping）、PCSS、VSSM、SDF Shadows](https://zhuanlan.zhihu.com/p/563672775)，第四章**PCSS（Percentage Closer Soft Shadows）\***
+> 参考阅读：[《GAMES202：高质量实时渲染》1 实时阴影：阴影映射（Shadow Mapping）、PCSS、VSSM、SDF Shadows](https://zhuanlan.zhihu.com/p/563672775)，第四章 _PCSS（Percentage Closer Soft Shadows）_
 
 ### VSSM
 
@@ -664,14 +664,14 @@ $k$的值可以调节软硬阴影的“硬度”。
 
 优点：
 
-- 快（但这个有点作弊，因为生成 SDF 是不计入软阴影渲染时间的）
-- 高质量
+-   快（但这个有点作弊，因为生成 SDF 是不计入软阴影渲染时间的）
+-   高质量
 
 缺点：
 
-- 需要预计算 SDF
-- 高额的存储开销
-- 接缝处等易有 Artifact
+-   需要预计算 SDF
+-   高额的存储开销
+-   接缝处等易有 Artifact
 
 ## 实时环境光照
 
@@ -693,8 +693,8 @@ $$
 
 容易发现：
 
-- 如果 BRDF 比较 glossy，那么反射光场的 lobe 其实比较细长（体现为高光），积分区限就小。
-- 如果 BRDF 比较 diffuse，那么反射光场的 lobe 覆盖很大的区域，但是漫反射的 lobe 却很光滑。
+-   如果 BRDF 比较 glossy，那么反射光场的 lobe 其实比较细长（体现为高光），积分区限就小。
+-   如果 BRDF 比较 diffuse，那么反射光场的 lobe 覆盖很大的区域，但是漫反射的 lobe 却很光滑。
 
 于是：
 
@@ -738,10 +738,10 @@ $$
 
 其中：
 
-- $\mathbf{h}$半程向量，$\mathbf{o}$指向光源，$\mathbf{i}$指向视点
-- $\mathbf{F}(\mathbf{i},\mathbf{h})$是 Fresnel 项
-- $\mathbf{G}(\mathbf{i},\mathbf{o},\mathbf{h})$是 shadowing-masking term
-- $\mathbf{D}(\mathbf{h})$是法线的 distribution
+-   $\mathbf{h}$半程向量，$\mathbf{o}$指向光源，$\mathbf{i}$指向视点
+-   $\mathbf{F}(\mathbf{i},\mathbf{h})$是 Fresnel 项
+-   $\mathbf{G}(\mathbf{i},\mathbf{o},\mathbf{h})$是 shadowing-masking term
+-   $\mathbf{D}(\mathbf{h})$是法线的 distribution
 
 关注 Fresnel 项和 NDF 项。
 
@@ -780,7 +780,7 @@ $$
 
 By the way，这种方法叫 Split Sum。
 
-_参考阅读：[《GAMES202：高质量实时渲染》2 实时环境光照：Split Sum、PRT](https://zhuanlan.zhihu.com/p/563676455)，第二章 **The Split Sum Approximation**。_
+> 参考阅读：[《GAMES202：高质量实时渲染》2 实时环境光照：Split Sum、PRT](https://zhuanlan.zhihu.com/p/563676455)，第二章 _The Split Sum Approximation_。
 
 ### PRT
 
@@ -788,8 +788,8 @@ _参考阅读：[《GAMES202：高质量实时渲染》2 实时环境光照：Sp
 
 两个对环境光的理解：
 
-- 既然环境光来自四面八方，那么每个方向都可以视作是一个光源，也就转化成了 many-light problem。这样的话开销就线性于 SM 的开销。
-- 视作一个采样的问题。知道 shading point 上半球各个方向不同的光线，解渲染方程，就要采样。难度在于，从 shading point 到各个方向的 visibility term 是不好知道的。此外，BRDF 可能是很高频的，特别是 glossy 的 BRDF；环境光（L 项）的 support 其实很大。这样积分式中，$L_{i}$、$f_{r}$、$V$项都拆不出来。
+-   既然环境光来自四面八方，那么每个方向都可以视作是一个光源，也就转化成了 many-light problem。这样的话开销就线性于 SM 的开销。
+-   视作一个采样的问题。知道 shading point 上半球各个方向不同的光线，解渲染方程，就要采样。难度在于，从 shading point 到各个方向的 visibility term 是不好知道的。此外，BRDF 可能是很高频的，特别是 glossy 的 BRDF；环境光（L 项）的 support 其实很大。这样积分式中，$L_{i}$、$f_{r}$、$V$项都拆不出来。
 
 $$
 L_{o}(p, \omega_{o})=\int_{\Omega^{+}}L_{i}(p, \omega_{i})f_{r}(p, \omega_{i}, \omega_{o})\cos{\theta_{i}}V(p, \omega_{i})\,\mathrm{d}\omega_{i}
@@ -805,7 +805,7 @@ Industrial solution：从最亮的光源（比如通常是太阳）下生成一�
 
 PRT（Precomputed Radiance Transfer）虽然预计算了，但是做这个做的还挺好的。
 
-_参考阅读：[《GAMES202：高质量实时渲染》2 实时环境光照：Split Sum、PRT](https://zhuanlan.zhihu.com/p/563676455)，第四章 **PRT**。_
+> 参考阅读：[《GAMES202：高质量实时渲染》2 实时环境光照：Split Sum、PRT](https://zhuanlan.zhihu.com/p/563676455)，第四章 _PRT_。
 
 首先，乘积的积分可以视作滤波（因为可以视作卷积）。
 
@@ -993,11 +993,11 @@ Light transport 项不能变，首先就意味着 visibility 不能变，意味�
 
 $SH$的美好的性质：
 
-- 正交。将一个$SH$函数投影到另一个$SH$函数上，得到的就是$0$.
-- 做投影和重建很简单，即 product intgral。
-- 做旋转很简单，正如上面提到支持光源旋转的原因。（有点像旋转坐标轴）
-- 做卷积很简单。
-- 基函数数量少。
+-   正交。将一个$SH$函数投影到另一个$SH$函数上，得到的就是$0$.
+-   做投影和重建很简单，即 product intgral。
+-   做旋转很简单，正如上面提到支持光源旋转的原因。（有点像旋转坐标轴）
+-   做卷积很简单。
+-   基函数数量少。
 
 当然了，$SH$函数的重建能力还是有所欠缺，对于高频信号需要的阶数极多，不过对于 diffuse BRDF，$3$阶$SH$还是够了的。
 
@@ -1051,10 +1051,10 @@ $$
 
 ### 其它基函数
 
-- Wavelet
-- Zonal Harmonics
-- Spherical Gaussian
-- Piecewise Constant
+-   Wavelet
+-   Zonal Harmonics
+-   Spherical Gaussian
+-   Piecewise Constant
 
 不过只介绍 wavelet，主题是二维的 Haar wavelet。
 
@@ -1090,7 +1090,7 @@ BTW，Jpeg 采用的就是**类似**小波变换的变换，**离散余弦变换
 
 一切被直接光照（其光源称为 primary light source）照到的物体，都会继续将自己作为光源（称为次级光源，secondary light source），再去照亮别的物体。
 
-_参考阅读：[《GAMES202：高质量实时渲染》3 实时全局光照：RSM、LPV、VXGI、SSAO、SSDO、SSR](https://zhuanlan.zhihu.com/p/556057984)。_
+> 参考阅读：[《GAMES202：高质量实时渲染》3 实时全局光照：RSM、LPV、VXGI、SSAO、SSDO、SSR](https://zhuanlan.zhihu.com/p/556057984)。
 
 ### 3D Space
 
@@ -1140,31 +1140,31 @@ $$
 
 **不过不是所有的 pixels 都会有贡献。**
 
-- Visibility（但是较难处理）
-- Orientation（就是根据法向，次级光源不可能照亮 shading point）
-- Distance（如果非常远，它的贡献就很小，那就干脆别管了）
+-   Visibility（但是较难处理）
+-   Orientation（就是根据法向，次级光源不可能照亮 shading point）
+-   Distance（如果非常远，它的贡献就很小，那就干脆别管了）
 
 对于第三点 distance，我们希望只关心距离 shading point“足够近”的次级光源。在世界坐标中找，比较繁琐，那么干脆投影到 Shadow Map 上，在 SM 中找近的。（**这里算是引入了一个比较大但是不算不合理的假设，即在 SM 中距离近的，在世界坐标中就距离近**）至于 SM 上找，那就可以有不同的采样方式。
 
 综上，RSM 需要存储的信息有：
 
-- **Depth** SM 本来就要存深度
-- **World Coordinate** 世界坐标判断两点距离
-- **Normal** 反射物法向，以及算$\cos$项
-- **Flux** 和光源有关的属性
+-   **Depth** SM 本来就要存深度
+-   **World Coordinate** 世界坐标判断两点距离
+-   **Normal** 反射物法向，以及算$\cos$项
+-   **Flux** 和光源有关的属性
 
 用在手电筒这种小区域上效果很好。
 
 优点：
 
-- 容易实现（因为基于 SM）
+-   容易实现（因为基于 SM）
 
 缺点：
 
-- 性能开销线性于光源数
-- 没有考虑 visibility（上面说了）
-- 假设太多，不够真
-- 采样和质量的 tradeoff
+-   性能开销线性于光源数
+-   没有考虑 visibility（上面说了）
+-   假设太多，不够真
+-   采样和质量的 tradeoff
 
 说它是图像空间的方法，是因为 SM 的第一个 pass 得到的就是一张图，基于这张图做的后续操作；不过话又说回来，正是因为 RSM 在这种情况下已经足够获取它所需要的所有信息了，所以说它是 3D 空间的方法也没问题，因为它不会受到 camera pass 是否可见造成的影响。
 
@@ -1354,8 +1354,8 @@ _第二个球中最下面的红点被 SM 错误判断了，但是这完全可以
 
 所以，SSAO 和 SSDO 的假设看上去其实是相反的，即：
 
-- AO：先假设 shading point 会接受到四面八方的间接光照，然后再根据阻挡情况，把一定比例的间接光照 block 掉
-- DO：不假设 shading point 接受四面八方的间接光照，而是只考虑次级光源的直接光照
+-   AO：先假设 shading point 会接受到四面八方的间接光照，然后再根据阻挡情况，把一定比例的间接光照 block 掉
+-   DO：不假设 shading point 接受四面八方的间接光照，而是只考虑次级光源的直接光照
 
 ![Differences_Between_AO_and_DO](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Differences_Between_AO_and_DO.png)
 
@@ -1414,12 +1414,12 @@ SSR 的思想在于：反射的部分，绝大多是其实是屏幕空间中已�
 
 流程是：
 
-- 首先已知不带 SSR 的屏幕空间场景（当然了，还有法向信息和深度信息两张贴图）
-- 对于任意 shading point，向场景中发射光线，与场景求交（详细来说，干的是 ray marching 的活，与最浅深度相交）
-  - 做 ray marching，从 shading point 出发，每隔一定步长，看看到那里是不是小于最小深度
-  - 显然，如果步长太长，最后求到的交就不准；如果步长太小，开销就很大
-  - 解决方法是 hierarchical ray trace
-- 将 SSR 的结果加到屏幕空间上，也就是 shading
+-   首先已知不带 SSR 的屏幕空间场景（当然了，还有法向信息和深度信息两张贴图）
+-   对于任意 shading point，向场景中发射光线，与场景求交（详细来说，干的是 ray marching 的活，与最浅深度相交）
+    -   做 ray marching，从 shading point 出发，每隔一定步长，看看到那里是不是小于最小深度
+    -   显然，如果步长太长，最后求到的交就不准；如果步长太小，开销就很大
+    -   解决方法是 hierarchical ray trace
+-   将 SSR 的结果加到屏幕空间上，也就是 shading
 
 其中，所谓的 hierarchical ray trace，需要用到 Depth Mip-Map，存储的是一个区域内的最浅深度。这样，使用这个加速结构的意义就是：如果说查询 Depth Mip-Map，如果连上层的一个最浅深度都交不上，那么就更不用说下级的所有深度了，那就可以快速跳过这一部分。
 
@@ -1458,12 +1458,12 @@ SSR 的缺点并不来自于光追，而还是在于屏幕空间：
 
 SSR 的其他特性：
 
-- 没有可见性和距离平方衰减的问题，因为是用 BRDF sampling 做的，在立体角范围内对 shading point 做 tracing，而不是对次级光源的 area 做积分算贡献
-- 对 shading point 有贡献的次级光源一定是可见的，遮挡关系是正确的
-- 支持各种 BRDF 的就不说了（比如 diffuse 反射得比较糊之类）
-- 天然支持 Contact Hardening。也就是说，和地板（就这么说吧，反正是这么个东西，地板上面展示 SSR 的反射结果）接触地近的，反射出来的比较清晰；远端就比较模糊
-- Specular Elongation。就是说如果认为地板各项同性，那么反射的 lobe 其实有点像一个拉长的椭圆；于是光线反射出去以后，看到的东西就好像被拉长了
-- 不挑地板。也就是说不论接受反射的是什么材质，都可以
+-   没有可见性和距离平方衰减的问题，因为是用 BRDF sampling 做的，在立体角范围内对 shading point 做 tracing，而不是对次级光源的 area 做积分算贡献
+-   对 shading point 有贡献的次级光源一定是可见的，遮挡关系是正确的
+-   支持各种 BRDF 的就不说了（比如 diffuse 反射得比较糊之类）
+-   天然支持 Contact Hardening。也就是说，和地板（就这么说吧，反正是这么个东西，地板上面展示 SSR 的反射结果）接触地近的，反射出来的比较清晰；远端就比较模糊
+-   Specular Elongation。就是说如果认为地板各项同性，那么反射的 lobe 其实有点像一个拉长的椭圆；于是光线反射出去以后，看到的东西就好像被拉长了
+-   不挑地板。也就是说不论接受反射的是什么材质，都可以
 
 SSR 的空间复用的 trick：
 
@@ -1475,14 +1475,14 @@ SSR 的空间复用的 trick：
 
 SSR 的优点：
 
-- 做 glossy 和 specular 表面的反射很快
-- 质量挺好的
-- 没有 spike，也没有遮挡上的问题
+-   做 glossy 和 specular 表面的反射很快
+-   质量挺好的
+-   没有 spike，也没有遮挡上的问题
 
 缺点：
 
-- diffuse 场景就没那么高效了
-- 继承了来自 Screen Space 方法的缺点
+-   diffuse 场景就没那么高效了
+-   继承了来自 Screen Space 方法的缺点
 
 ## PBR
 
@@ -1500,9 +1500,9 @@ $$
 f(\mathbf{i},\mathbf{o})=\frac{\mathbf{F}(\mathbf{i},\mathbf{h})\mathbf{G}(\mathbf{i},\mathbf{o},\mathbf{h})\mathbf{D}(\mathbf{h})}{4(\mathbf{n},\mathbf{i})(\mathbf{n},\mathbf{o})}
 $$
 
-- **Fresnel 项** $\mathbf{F}(\mathbf{i},\mathbf{h})$，决定从一个角度看去，有多少能量会被反射
-- **Shadowing-masking 项** $\mathbf{G}(\mathbf{i},\mathbf{o},\mathbf{h})$，或者说**G 项**，
-- **Normals Distribution 项** $\mathbf{D}(\mathbf{h})$，即微表面法线分布
+-   **Fresnel 项** $\mathbf{F}(\mathbf{i},\mathbf{h})$，决定从一个角度看去，有多少能量会被反射
+-   **Shadowing-masking 项** $\mathbf{G}(\mathbf{i},\mathbf{o},\mathbf{h})$，或者说**G 项**，
+-   **Normals Distribution 项** $\mathbf{D}(\mathbf{h})$，即微表面法线分布
 
 #### Fresnel 项
 
@@ -1593,8 +1593,8 @@ Extending GGX，或者说 GTR（Generalized Trowbridge-Reitz）对 GGX 作出了
 
 之所以叫 Shadowing-Masking 项，是因为：
 
-- 当光线照射到微表面上却被微表面自遮挡时，那就 shadowing 了
-- 由光路可逆，从微表面出射的光线也会被微表面自遮挡，对于眼睛来说这部分光就被 masked 了
+-   当光线照射到微表面上却被微表面自遮挡时，那就 shadowing 了
+-   由光路可逆，从微表面出射的光线也会被微表面自遮挡，对于眼睛来说这部分光就被 masked 了
 
 本质上，这两点是一样的。正是因为，微表面自遮挡本身会导致材质一部分变暗，因此引入 Shadowing-Masking 项。我们希望，在正对法向看的时候，$G$项应该接近于$1$；而在 grazing angle 的时候，$G$项应该剧烈地减少到接近于$0$。
 
@@ -1782,10 +1782,10 @@ $$
 
 Disney Principled 的原则是：
 
-- 参数直观一些（别老是物理量，咱美工看不懂喵）
-- 参数越少越好
-- 最好是$0$到$1$的；为了营造一些特殊效果，倒也可以推到小于$0$或者大于$1$的
-- 组合起来也得健壮
+-   参数直观一些（别老是物理量，咱美工看不懂喵）
+-   参数越少越好
+-   最好是$0$到$1$的；为了营造一些特殊效果，倒也可以推到小于$0$或者大于$1$的
+-   组合起来也得健壮
 
 优点：
 
@@ -1801,18 +1801,18 @@ Disney Principled 的原则是：
 
 实时 NPR 通常：
 
-- 来自于真实渲染
-- 抽象
-- 增强重要部分
+-   来自于真实渲染
+-   抽象
+-   增强重要部分
 
 ---
 
 先说说描边。描的边包括：
 
-- Boundary 边界
-- Crease 折痕
-- Material edge 材质边界
-- Silhouette edge 我把它翻译成剪影边缘。它必须是有多个面共享的边界，因此和 Boundary 区分开来，而且还得是物体外边界上
+-   Boundary 边界
+-   Crease 折痕
+-   Material edge 材质边界
+-   Silhouette edge 我把它翻译成剪影边缘。它必须是有多个面共享的边界，因此和 Boundary 区分开来，而且还得是物体外边界上
 
 用 Shading 的做法描 silhoutte 的边，我们知道观察法向如果和法线接近垂直，那么我们几乎就可以断定它就是 silhoutte 的。简而言之，就是造成 grazing angle 的地方。（Watertight 的话）
 
@@ -1854,10 +1854,10 @@ Disney Principled 的原则是：
 
 如图所示，最简单的 1spp 光路中，每个像素至少要有 3 条光线，包括：
 
-- 从 camera 打到 primary hitpoint 的 rasterization 用的光线（其实效果和光栅化一致，所以未必一定要 trace 一条 primary 光线，不如直接光栅化一遍。因此不称之为 ray，而写的是 rasterization。光栅化和 trace primary ray 等价，但是光栅化显然更快）
-- primary hitpoint 的 shadow ray，也就是连到光源看有没有遮挡用的光线
-- 从 primary hitpoint 到 secondary hitpoint 的一次 bounce
-- 对 secondary hitpoint 发 shadow ray，看看有没有遮挡
+-   从 camera 打到 primary hitpoint 的 rasterization 用的光线（其实效果和光栅化一致，所以未必一定要 trace 一条 primary 光线，不如直接光栅化一遍。因此不称之为 ray，而写的是 rasterization。光栅化和 trace primary ray 等价，但是光栅化显然更快）
+-   primary hitpoint 的 shadow ray，也就是连到光源看有没有遮挡用的光线
+-   从 primary hitpoint 到 secondary hitpoint 的一次 bounce
+-   对 secondary hitpoint 发 shadow ray，看看有没有遮挡
 
 Path Tracing 本身是一种 Monte Carlo 积分方法，会有噪声。显然，1spp 的光追，其噪声是极其恐怖的。**所以，RTRT 的核心科技在于降噪（Denoising）。**
 
@@ -1865,8 +1865,8 @@ Path Tracing 本身是一种 Monte Carlo 积分方法，会有噪声。显然，
 
 目标：
 
-- 质量（不要 overblur，不要 artifacts，保持细节）
-- 速度（希望小于 2ms）
+-   质量（不要 overblur，不要 artifacts，保持细节）
+-   速度（希望小于 2ms）
 
 评价为几乎不可能。
 
@@ -1908,9 +1908,9 @@ G-Buffer，这里的 G 表示 Geometry。它可以存包括诸如直接光照（
 
 ### Temporal Failure
 
-- 显然场景一切换（不只是场景，物体、光源等都是，但凡是突变了都是），直接就坏事了（需要 burn-in period）
-- 往后走：屏幕空间（从边缘）纳入了越来越多的信息，temporal 肯定是搞不定的
-- Disocclusion：随着时间推移，原本被遮挡的东西突然出现了。但是这种情况下，通过 motion vector 找到的就不是正确的像素了（因为在上一帧它还被挡住，自然指向的是深度更浅的东西）
+-   显然场景一切换（不只是场景，物体、光源等都是，但凡是突变了都是），直接就坏事了（需要 burn-in period）
+-   往后走：屏幕空间（从边缘）纳入了越来越多的信息，temporal 肯定是搞不定的
+-   Disocclusion：随着时间推移，原本被遮挡的东西突然出现了。但是这种情况下，通过 motion vector 找到的就不是正确的像素了（因为在上一帧它还被挡住，自然指向的是深度更浅的东西）
 
 ~~其实主要是 Screen Space 的问题（~~
 
@@ -1956,9 +1956,9 @@ Temporal failure 还会在 shading 中造成问题。
 
 约定：
 
-- 噪声图像表示为$\tilde{\text{C}}$
-- 滤波核$K$
-- 输出 filtered 的图像$\bar{\text{C}}$
+-   噪声图像表示为$\tilde{\text{C}}$
+-   滤波核$K$
+-   输出 filtered 的图像$\bar{\text{C}}$
 
 #### Gaussian Filter
 
@@ -2054,8 +2054,8 @@ $$
 
 一个例子是 a-trous wavelet，基本思想是：
 
-- 多趟，每一趟都是 5x5 的滤波器
-- 每一趟中的滤波器是有不同的间隔的
+-   多趟，每一趟都是 5x5 的滤波器
+-   每一趟中的滤波器是有不同的间隔的
 
 ![A-Trous-Wavelet](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/A-Trous-Wavelet.png)
 
