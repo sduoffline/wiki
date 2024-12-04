@@ -356,18 +356,22 @@ L_{o}(p, \omega_{o})=L_{e}(p, \omega_{o})+\int_{H^{2}}f_{r}(p, \omega_{i}\righta
 $$
 其中：
 
--   $L_{o}(p, \omega_{o})$ 为outgoing radiance。
+-   $L_{o}(p, \omega_{o})$ 为outgoing radiance，表示从点 $p$ 出发沿方向 $\omega_{o}$ 的辐射度。~~什么辐射度，我只知道 radiance~~
 -   $L_{e}(p, \omega_{o})$ 为emission。它表示表面自身发出的辐射度，比如自发光材质。
 -   $f_{r}(p, \omega_{i}\rightarrow\omega_{o})$ 为BRDF。它接受两个向量作为输入：入射光线的方向和观察者的视线方向。然后，它输出一个表示光线在该表面上反射的强度的值。不严谨地说，带不带$\cos$项其实是无所谓的，都是BRDF。
 -   $L_{i}(p, \omega_{i})$ 为incident radiance。它表示了从周围环境中来自方向$\omega_{i}$的光线的能量。
 
-这样，方程就考虑了全局光照（global illumination）的影响。通过对周围环境中所有入射方向的辐射度进行积分，可以考虑到光线在环境中的散射、反射和遮挡等效应，从而获得更真实的渲染结果。在积分中，$\cos\theta_{i}$ 表示了入射光线的入射角度与表面法线的夹角的余弦值。这是因为入射角度越接近表面法线，入射光线对表面的影响越大。$\cos\theta_{i}$ 的作用是对入射光线的辐射度进行调整，使得入射角度较小的光线在积分中贡献更多的反射辐射度。这个 $\cos\theta_{i}$ 项是由于光线在表面上的能量分布与入射角度有关。通过乘以 $\cos\theta_{i}$，可以考虑到光线在不同入射角度下的能量变化，从而更准确地计算出反射辐射度。在渲染方程中，$L_{i}(p, \omega_{i})$ 与 BRDF $f_{r}(p, \omega_{i}\rightarrow\omega_{o})$ 相乘，表示了入射光线与表面的相互作用。这个乘积表示了从方向 $\omega_{i}$ 入射的光线经过表面反射后的辐射度。
+这样，方程就考虑了全局光照（global illumination）的影响。通过对周围环境中所有入射方向的辐射度进行积分，可以考虑到光线在环境中的散射、反射和遮挡等效应，从而获得更真实的渲染结果。
+
+在积分中，$\cos\theta_{i}$ 表示了入射光线的入射角度与表面法线的夹角的余弦值。这是因为入射角度越接近表面法线，入射光线对表面的影响越大。$\cos\theta_{i}$ 的作用是对入射光线的辐射度进行调整，使得入射角度较小的光线在积分中贡献更多的反射辐射度。这个 $\cos\theta_{i}$ 项是由于光线在表面上的能量分布与入射角度有关。通过乘以 $\cos\theta_{i}$，可以考虑到光线在不同入射角度下的能量变化，从而更准确地计算出反射辐射度。
+
+在渲染方程中，$L_{i}(p, \omega_{i})$ 与 BRDF $f_{r}(p, \omega_{i}\rightarrow\omega_{o})$ 相乘，表示了入射光线与表面的相互作用。这个乘积表示了从方向 $\omega_{i}$ 入射的光线经过表面反射后的辐射度。
 
 而在**实时渲染**中，渲染方程如下：
 $$
 L_{o}(p, \omega_{o})=\int_{\Omega^{+}}L_{i}(p, \omega_{i})f_{r}(p, \omega_{i}, \omega_{o})\cos{\theta_{i}}V(p, \omega_{i})\,\mathrm{d}\omega_{i}
 $$
-显式地引入visibility，本质上和上面的渲染方程等价。
+显式地引入 visibility，本质上和上面的渲染方程等价。
 
 其中：
 
@@ -405,7 +409,7 @@ Solution：认为发生遮挡，不仅要深度有大小关系，而且要“明
 
 ### Second-depth Shadow Mapping
 
-其实就是，Shadow Map不仅存最小深度，还同时存储次小深度。将最小深度和次小深度取平均，即得到midpoint。用midpoint当作遮挡关系的threshold。~~但是实际上没人用。~~
+其实就是，Shadow Map不仅存最小深度，还同时存储次小深度。将最小深度和次小深度取平均，即得到midpoint。用midpoint当作遮挡关系的阈值（threshold）。~~但是实际上没人用。~~
 
 缺点：
 
@@ -461,7 +465,7 @@ $$
 
 ### PCF
 
- Percentage Closer Filter（PCF）是一种用于阴影贴图采样的滤波器技术，用于减少阴影贴图采样带来的锯齿边缘。PCF 通过在每个阴影像素周围进行多次采样，并根据采样结果计算出阴影的平均值，从而实现柔和的阴影边缘。
+Percentage Closer Filter（PCF）是一种用于阴影贴图采样的滤波器技术，用于减少阴影贴图采样带来的锯齿边缘。PCF 通过在每个阴影像素周围进行多次采样，并根据采样结果计算出阴影的平均值，从而实现柔和的阴影边缘。
 
 *参考阅读：[《GAMES202：高质量实时渲染》1 实时阴影：阴影映射（Shadow Mapping）、PCSS、VSSM、SDF Shadows](https://zhuanlan.zhihu.com/p/563672775)，第二章**PCF（Percentage Closer Filtering）反走样***
 
