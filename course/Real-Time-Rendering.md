@@ -208,11 +208,11 @@ DFSS（Distance Field Soft Shadows）**原理**：利用距离场值表示点附
 
 **光路**：如果直接光照在非specular材质上多bounce后进入眼睛，那么光路就是`L(D|G)*E`，称为`LGGE`光路。如果直接光照在specular材质上，反射到diffuse材质上后多bounce后进入眼睛，那么光路就是`LS*(D|G)*E`，称为`LSDE`光路。
 
-## GI
+### GI
 
-### 3D
+#### 3D
 
-#### RSM
+##### RSM
 
 RSM（Reflective Shadow Mapping）是一种基于阴影映射的实时全局光照算法。其核心思路是：
 
@@ -231,7 +231,7 @@ RSM（Reflective Shadow Mapping）是一种基于阴影映射的实时全局光�
 
 **光路**：`LD(D|G)E`
 
-#### LPV
+##### LPV
 
 LPV（Light Propagation Volumes）是一种基于三维网格的全局光照算法。其核心思路是:
 
@@ -249,7 +249,7 @@ LPV（Light Propagation Volumes）是一种基于三维网格的全局光照算�
 
 **光路**：`LD(D|G)E`
 
-#### VXGI
+##### VXGI
 
 VXGI是一种基于体素（voxel）的全局光照算法。其核心思路是:
 
@@ -267,9 +267,9 @@ VXGI是一种基于体素（voxel）的全局光照算法。其核心思路是:
 
 **光路**：`LG(D|G)E`或者`LG(D|G)E`
 
-### Screen Space
+#### Screen Space
 
-#### SSAO
+##### SSAO
 
 SSAO是一种基于屏幕空间信息的简易全局光照算法。其核心思路是:
 
@@ -287,7 +287,7 @@ SSAO是一种基于屏幕空间信息的简易全局光照算法。其核心思�
 
 **改进**：提高采样质量，引入法线权重等。
 
-#### SSDO
+##### SSDO
 
 **SSDO算法（屏幕空间定向遮蔽）通过在屏幕空间估计场景中次级光源对间接光照的贡献，以实现颜色溢出等效果。**
 
@@ -303,7 +303,7 @@ SSAO是一种基于屏幕空间信息的简易全局光照算法。其核心思�
 
 **光路**：`LDDE`
 
-#### SSR
+##### SSR
 
 **SSR（屏幕空间光线追踪）是一种基于屏幕空间信息实现全局光照效果的算法。**
 
@@ -420,7 +420,7 @@ $$
 $$
 **Minkowski 不等式**
 $$
-\left( \int_a^b \left[ f(x) + g(x) \right]^2 \,\mathrm{d}x \right)^{\frac{1}{2}} \leq \left( \int_{a}^{b} f^{2}(x) \,\mathrm{d}x \right)^{\frac{1}{2}} + \left( \int_{a}^{b} g^{2}(x) , \,\mathrm{d}x \right)^{\frac{1}{2}}
+\left( \int_a^b \left[ f(x) + g(x) \right]^2 \,\mathrm{d}x \right)^{\frac{1}{2}} \leq \left( \int_{a}^{b} f^{2}(x) \,\mathrm{d}x \right)^{\frac{1}{2}} + \left( \int_{a}^{b} g^{2}(x)\,\mathrm{d}x \right)^{\frac{1}{2}}
 $$
 **RTR中的近似**
 
