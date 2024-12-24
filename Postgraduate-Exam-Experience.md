@@ -2,7 +2,7 @@
 title: 考研经验贴
 description: 
 published: true
-date: 2024-12-24T09:00:02.792Z
+date: 2024-12-24T09:01:25.351Z
 tags: 
 editor: markdown
 dateCreated: 2024-05-09T07:37:00.436Z
@@ -16,7 +16,8 @@ dateCreated: 2024-05-09T07:37:00.436Z
 >
 > 主要分享一些方向规划的见解，初试内容复习请去看对应科目的专业老师（张宇，肖秀荣.....)
 
-2024.12：更新了很多建议查看原文博客
+2024.12：更新了很多，建议看完之后再查看一下原文博客
+
 原文博客链接：
 https://www.zwn2001.space/posts/Graduate-Works/Experiences/2024BUAA%E8%BD%AF%E9%99%A2%E4%B8%93%E7%A1%95%E8%80%83%E7%A0%94tips/
 https://www.zwn2001.space/posts/Graduate-Works/Experiences/%E8%B7%A8%E8%80%83991%E4%B9%8B%E8%BD%AF%E5%B7%A5%E5%A4%8D%E4%B9%A0%E8%A7%81%E8%A7%A3/
