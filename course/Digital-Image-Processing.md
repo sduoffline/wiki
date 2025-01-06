@@ -2,7 +2,7 @@
 title: 数字图像处理
 description: 哈哈。Fuck you.
 published: true
-date: 2024-01-02T14:44:46.328Z
+date: 2025-01-06T12:37:35.879Z
 tags: 
 editor: markdown
 dateCreated: 2024-01-02T14:44:46.328Z
@@ -1536,7 +1536,7 @@ B 的反射进行平移与A的交集是 A 的子集。在给定的定义中，$(
 
 ### 区域填充
 
-区域填充（Region Filling）：$X_{k}=X_{k-1}\oplus B\cap A^{c}$
+区域填充（Region Filling）：$X_{k}=X_{k-1}\oplus B\cap A^c$
 
 ![Region_Filling](https://cloud.icooper.cc/apps/sharingpath/PicSvr/PicMain/Region_Filling.png)
 
